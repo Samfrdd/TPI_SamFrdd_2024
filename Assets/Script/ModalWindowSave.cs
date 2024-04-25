@@ -29,7 +29,8 @@ public class ModalWindowSave : MonoBehaviour
     private GameObject _modalWindow;
     [SerializeField]
     private GameObject _inputField;
-
+    [SerializeField]
+    private GameObject _modalWindowChoice;
     [SerializeField]
     private GameObject _lblErreur;
     [SerializeField]
@@ -43,9 +44,14 @@ public class ModalWindowSave : MonoBehaviour
     public GameObject LblErreur { get => _lblErreur; set => _lblErreur = value; }
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
     public MapManager ManagerMap { get => _managerMap; set => _managerMap = value; }
+    public GameObject ModalWindowChoice { get => _modalWindowChoice; set => _modalWindowChoice = value; }
 
     public void OpenModal()
     {
+        if (ModalWindowChoice.activeSelf)
+        {
+            gameObject.GetComponent<ModalManager>().CloseModal(ModalWindowChoice);
+        }
         ModalWindow.SetActive(true);
         LblErreur.SetActive(false);
 

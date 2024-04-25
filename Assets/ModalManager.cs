@@ -11,17 +11,20 @@ public class ModalManager : MonoBehaviour
     [SerializeField]
     private ManagerUI _managerUI;
 
-
+    [SerializeField]
+    private GameObject _modalWindowSave;
 
     public GameObject ModalWindow { get => _modalWindow; set => _modalWindow = value; }
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
+    public GameObject ModalWindowSave { get => _modalWindowSave; set => _modalWindowSave = value; }
 
-
-   public void OpenModal(GameObject modal)
+    public void OpenModal(GameObject modal)
     {
+        if (ModalWindowSave.activeSelf)
+        {
+            gameObject.GetComponent<ModalWindowSave>().CloseModal();
+        }
         modal.SetActive(true);
-
-
     }
 
     public void CloseModal(GameObject modal)

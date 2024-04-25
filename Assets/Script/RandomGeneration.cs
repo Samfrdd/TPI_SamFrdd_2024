@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Xml.Serialization;
 using Unity.VisualScripting;
+using UnityEditor;
 
 public class RandomGeneration : MonoBehaviour
 {
@@ -243,7 +244,9 @@ public class RandomGeneration : MonoBehaviour
 
         GetAllBlocNotConnected();
 
-       // generateBtnEnter();
+        ManagerUI.SetBtnChoice(true);
+        ManagerUI.SetBtnSave();
+        // generateBtnEnter();
         ManagerUI.BtnRestartGenerator.enabled = true;
         ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
 
@@ -326,7 +329,7 @@ public class RandomGeneration : MonoBehaviour
     }
 
     // Fonctions qui génère tous les boutons pour placer une entre
-    public void generateBtnEnter()
+    public void generateBtnEnter(int mode)
     {
         ManagerUI.SetTexBoxText("Veuillez sélectionner une entré !");
 
@@ -360,14 +363,14 @@ public class RandomGeneration : MonoBehaviour
             if (button != null)
             {
                 // Ajouter un écouteur d'évènement au bouton avec une méthode à appeler et un paramètre
-                button.onClick.AddListener(() => AjouterEntre(targetObject.transform));
+                button.onClick.AddListener(() => AjouterEntre(targetObject.transform, mode));
             }
         }
     }
 
 
     // Fonctions qui génère tous les boutons pour placer une sortie
-    public void GenerateBtnExit()
+    public void GenerateBtnExit(int mode)
     {
         ManagerUI.SetTexBoxText("Veuillez sélectionner une sortie !");
 
@@ -403,14 +406,14 @@ public class RandomGeneration : MonoBehaviour
             if (button != null)
             {
                 // Ajouter un �couteur d'�v�nement au bouton avec une m�thode � appeler et un param�tre
-                button.onClick.AddListener(() => AjouterExit(targetObject.transform));
+                button.onClick.AddListener(() => AjouterExit(targetObject.transform, mode));
             }
         }
     }
 
 
     //Fonctions qui ajoute l'entré a la carte
-    public void AjouterEntre(Transform entre)
+    public void AjouterEntre(Transform entre, int mode)
     {
         GameObject block;
         EntreChoisi = entre.gameObject;
@@ -418,41 +421,206 @@ public class RandomGeneration : MonoBehaviour
         Vector3 position = new Vector3();
         float rotation = 0f;
 
-        // NE MARCHE PAS POUR LES ANGLES
-        if (entre.parent.gameObject.transform.position.z == -45) // SUD
+       
+        if (entre.parent.gameObject.transform.position.z == 45 && entre.parent.gameObject.transform.position.x == 45)
         {
-            position = entre.parent.transform.position + new Vector3(0, 0, -10);
-            rotation = 180f;
-        }
-        else if (entre.parent.gameObject.transform.position.z == 45) // NORD
-        {
-            position = entre.parent.transform.position + new Vector3(0, 0, 10);
+
+            // Obtenez la position de l'objet et du carre parent dans le referentiel mondial
+            Vector3 objectPosition = entre.transform.position;
+            Vector3 parentPosition = entre.parent.gameObject.transform.position;
+
+            // Calculez la difference de position entre l'objet et le carre parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de difference et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+                // Debug.Log("L'objet est a droite du carre parent.");
+                position = parentPosition + new Vector3(10, 0, 0);
+                rotation = 90;
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carre parent.");
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                // Debug.Log("L'objet est a gauche du carre parent.");
+            }
+            else
+            {
+                // Debug.Log("L'objet est en bas du carre parent.");
+
+                position = parentPosition + new Vector3(0, 0, 10);
+                rotation = 0;
+            }
 
         }
-        else if (entre.parent.gameObject.transform.position.x == 45) // EST
+        else if (entre.parent.gameObject.transform.position.z == 45 && entre.parent.gameObject.transform.position.x == -45)
         {
-            position = entre.parent.transform.position + new Vector3(10, 0, 0);
-            rotation = 90;
+            // Obtenez la position de l'objet et du carr� parent dans le r�f�rentiel mondial
+            Vector3 objectPosition = entre.transform.position;
+            Vector3 parentPosition = entre.parent.gameObject.transform.position;
 
+            // Calculez la diff�rence de position entre l'objet et le carr� parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de diff�rence et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carr� parent.");
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+            }
+            else
+            {
+                //  Debug.Log("L'objet est en bas du carr� parent.");
+
+                position = parentPosition + new Vector3(0, 0, 10);
+                rotation = 0;
+            }
         }
-        else if (entre.parent.gameObject.transform.position.x == -45) // OUEST
+        else if (entre.parent.gameObject.transform.position.z == -45 && entre.parent.gameObject.transform.position.x == -45)
         {
-            position = entre.parent.transform.position + new Vector3(-10, 0, 0);
-            rotation = -90;
+            // Obtenez la position de l'objet et du carr� parent dans le r�f�rentiel mondial
+            Vector3 objectPosition = entre.transform.position;
+            Vector3 parentPosition = entre.parent.gameObject.transform.position;
+
+            // Calculez la diff�rence de position entre l'objet et le carr� parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de diff�rence et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+            }
+            else
+            {
+                // Debug.Log("L'objet est en bas du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+
+            }
         }
+        else if (entre.parent.gameObject.transform.position.z == -45 && entre.parent.gameObject.transform.position.x == 45)
+        {
+            // Obtenez la position de l'objet et du carr� parent dans le r�f�rentiel mondial
+            Vector3 objectPosition = entre.transform.position;
+            Vector3 parentPosition = entre.parent.gameObject.transform.position;
+
+            // Calculez la diff�rence de position entre l'objet et le carr� parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de diff�rence et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+                position = parentPosition + new Vector3(10, 0, 0);
+                rotation = 90;
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+            }
+            else
+            {
+                //  Debug.Log("L'objet est en bas du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+
+            }
+        }
+        else
+        {
+            Vector3 parentPosition = entre.parent.gameObject.transform.position;
+
+
+            if (entre.parent.gameObject.transform.position.z == -45) // SUD
+            {
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+            }
+            else if (entre.parent.gameObject.transform.position.z == 45) // NORD
+            {
+                position = parentPosition + new Vector3(0, 0, 10);
+                rotation = 0;
+
+            }
+            else if (entre.parent.gameObject.transform.position.x == 45) // EST
+            {
+                position = parentPosition + new Vector3(10, 0, 0);
+                rotation = 90;
+
+            }
+            else if (entre.parent.gameObject.transform.position.x == -45) // OUEST
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+
+            }
+        }
+
+
         block = Instantiate(BlockEnter, position, Quaternion.identity);
         block.name = BlockEnter.name;
         block.transform.parent = FolderBlocParent;
         block.transform.Rotate(0f, rotation, 0f);
 
         RemoveButton();
-        GenerateBtnExit();
+        if (mode == 1)
+        {
+            GenerateBtnExit(mode);
+        }
+
+        if (mode == 2)
+        {
+            StartCoroutine(CompleteMap(mode));
+        }
+
     }
 
     //Foncions qui ajoute la sortie
-    public void AjouterExit(Transform exit)
+    public void AjouterExit(Transform exit, int mode = 2)
     {
         GameObject block;
+        Vector3 position = new Vector3();
+        float rotation = 0f;
         Debug.Log(exit.gameObject.name);
 
         List<GameObject> _lstExit = LstEntre1;
@@ -464,45 +632,193 @@ public class RandomGeneration : MonoBehaviour
 
         this.LstEntre1 = _lstExit;
 
-        Vector3 position = new Vector3();
-        float rotation = 0f;
-
-        // NE MARCHE PAS POUR LES ANGLES
-
-
-        if (exit.parent.gameObject.transform.position.z == -45) // SUD
+        if (exit.parent.gameObject.transform.position.z == 45 && exit.parent.gameObject.transform.position.x == 45)
         {
-            position = exit.parent.transform.position + new Vector3(0, 0, -10);
-            rotation = 180f;
+
+            // Obtenez la position de l'objet et du carre parent dans le referentiel mondial
+            Vector3 objectPosition = exit.transform.position;
+            Vector3 parentPosition = exit.parent.gameObject.transform.position;
+
+            // Calculez la difference de position entre l'objet et le carre parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de difference et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+                // Debug.Log("L'objet est a droite du carre parent.");
+                position = parentPosition + new Vector3(10, 0, 0);
+                rotation = 90;
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carre parent.");
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                // Debug.Log("L'objet est a gauche du carre parent.");
+            }
+            else
+            {
+                // Debug.Log("L'objet est en bas du carre parent.");
+
+                position = parentPosition + new Vector3(0, 0, 10);
+                rotation = 0;
+            }
+
         }
-        else if (exit.parent.gameObject.transform.position.z == 45) // NORD
+        else if (exit.parent.gameObject.transform.position.z == 45 && exit.parent.gameObject.transform.position.x == -45)
         {
-            position = exit.parent.transform.position + new Vector3(0, 0, 10);
+            // Obtenez la position de l'objet et du carr� parent dans le r�f�rentiel mondial
+            Vector3 objectPosition = exit.transform.position;
+            Vector3 parentPosition = exit.parent.gameObject.transform.position;
 
+            // Calculez la diff�rence de position entre l'objet et le carr� parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de diff�rence et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carr� parent.");
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+            }
+            else
+            {
+                //  Debug.Log("L'objet est en bas du carr� parent.");
+
+                position = parentPosition + new Vector3(0, 0, 10);
+                rotation = 0;
+            }
         }
-        else if (exit.parent.gameObject.transform.position.x == 45) // EST
+        else if (exit.parent.gameObject.transform.position.z == -45 && exit.parent.gameObject.transform.position.x == -45)
         {
-            position = exit.parent.transform.position + new Vector3(10, 0, 0);
-            rotation = 90;
+            // Obtenez la position de l'objet et du carr� parent dans le r�f�rentiel mondial
+            Vector3 objectPosition = exit.transform.position;
+            Vector3 parentPosition = exit.parent.gameObject.transform.position;
 
+            // Calculez la diff�rence de position entre l'objet et le carr� parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de diff�rence et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+            }
+            else
+            {
+                // Debug.Log("L'objet est en bas du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+
+            }
         }
-        else if (exit.parent.gameObject.transform.position.x == -45) // OUEST
+        else if (exit.parent.gameObject.transform.position.z == -45 && exit.parent.gameObject.transform.position.x == 45)
         {
-            position = exit.parent.transform.position + new Vector3(-10, 0, 0);
-            rotation = -90;
+            // Obtenez la position de l'objet et du carr� parent dans le r�f�rentiel mondial
+            Vector3 objectPosition = exit.transform.position;
+            Vector3 parentPosition = exit.parent.gameObject.transform.position;
 
+            // Calculez la diff�rence de position entre l'objet et le carr� parent
+            Vector3 difference = objectPosition - parentPosition;
+
+            // Calculez l'angle entre le vecteur de diff�rence et l'axe X (droite)
+            float angle = Vector3.SignedAngle(difference, Vector3.right, Vector3.forward);
+
+            // D�terminez la position relative en fonction de l'angle
+            if (angle > -45 && angle <= 45)
+            {
+                position = parentPosition + new Vector3(10, 0, 0);
+                rotation = 90;
+            }
+            else if (angle > 45 && angle <= 135)
+            {
+                // Debug.Log("L'objet est en haut du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+            }
+            else if (angle > 135 || angle <= -135)
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+            }
+            else
+            {
+                //  Debug.Log("L'objet est en bas du carr� parent.");
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+
+            }
         }
+        else
+        {
+            Vector3 parentPosition = exit.parent.gameObject.transform.position;
 
+
+            if (exit.parent.gameObject.transform.position.z == -45) // SUD
+            {
+                position = parentPosition + new Vector3(0, 0, -10);
+                rotation = 180;
+            }
+            else if (exit.parent.gameObject.transform.position.z == 45) // NORD
+            {
+                position = parentPosition + new Vector3(0, 0, 10);
+                rotation = 0;
+
+            }
+            else if (exit.parent.gameObject.transform.position.x == 45) // EST
+            {
+                position = parentPosition + new Vector3(10, 0, 0);
+                rotation = 90;
+
+            }
+            else if (exit.parent.gameObject.transform.position.x == -45) // OUEST
+            {
+                position = parentPosition + new Vector3(-10, 0, 0);
+                rotation = -90;
+
+            }
+        }
 
         block = Instantiate(BlockExit, position, Quaternion.identity);
         block.transform.parent = FolderBlocParent;
         block.name = BlockExit.name;
         block.transform.Rotate(0f, rotation, 0f);
 
-        RemoveButton();
-        CompleteMap();
-    }
+        if (mode == 1)
+        {
+            RemoveButton();
+            StartCoroutine(CompleteMap());
+        }
 
+
+    }
 
     // Fonctions qui ajoute les blocs pour fermé la map
     public void AjouterBlocFermeture(Transform blocNotConnected, GameObject prefab)
@@ -582,7 +898,6 @@ public class RandomGeneration : MonoBehaviour
                 position = parentPosition + new Vector3(0, 0, 10);
                 rotation = 180;
             }
-
         }
         else if (blocNotConnected.parent.gameObject.transform.position.z == -45 && blocNotConnected.parent.gameObject.transform.position.x == -45)
         {
@@ -693,10 +1008,11 @@ public class RandomGeneration : MonoBehaviour
         block.transform.Rotate(0f, rotation, 0f);
     }
 
-    public void CompleteMap()
+    IEnumerator CompleteMap(int mode = 1)
     {
         ManagerUI.SetTexBoxText("Génération terminer ! ");
 
+        yield return new WaitForSeconds(0.02f);
 
         GetAllBlocNotConnected();
 
@@ -711,13 +1027,20 @@ public class RandomGeneration : MonoBehaviour
             }
             else
             {
-                AjouterBlocFermeture(LstAllBlocNotConnected[i].transform, BlocSensUnique);
+                if (mode == 2 || mode == 3)
+                {
+                    AjouterExit(LstAllBlocNotConnected[i].transform);
+                }
+                else
+                {
+                    AjouterBlocFermeture(LstAllBlocNotConnected[i].transform, BlocSensUnique);
+                }
             }
         }
 
         Debug.Log("Map termnimé");
 
-        ManagerUI.BtnSave.gameObject.SetActive(true);
+
 
         ManagerUI.SetBtnStart();
 
@@ -771,6 +1094,19 @@ public class RandomGeneration : MonoBehaviour
     }
 
 
+    public void GenerateMode1()
+    {
+        generateBtnEnter(1);
+    }
 
+    public void GenerateMode2()
+    {
+        generateBtnEnter(2);
+    }
+
+    public void GenerateMode3()
+    {
+
+    }
 
 }

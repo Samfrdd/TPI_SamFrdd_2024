@@ -99,7 +99,7 @@ public class LoadListMapSave : MonoBehaviour
                 if (button != null)
                 {
                     // Ajouter un écouteur d'évènement au bouton avec une méthode à appeler et un paramètre
-                    button.onClick.AddListener(() => gameObject.GetComponent<ManagerScene>().LoadScene("Main_NewPathFinder", Path.GetFileName(fileName)));
+                    button.onClick.AddListener(() => gameObject.GetComponent<ManagerScene>().LoadScene("Main_Simulation", Path.GetFileName(fileName)));
                 }
 
                 FileInfo fi = new FileInfo(fileName);

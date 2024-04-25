@@ -28,6 +28,8 @@ public class ManagerUI : MonoBehaviour
     [SerializeField]
     private Button _btnStart; // Btn qui permet de lancer le pathfinder
     [SerializeField]
+    private Button _btnChoice; // Btn qui permet de lancer le pathfinder    
+    [SerializeField]
     private Button _btnPause; // Btn qui permet de lancer le pathfinder
     [SerializeField]
     private Button _btnRestartGenerator; // Btn regénerer qui est dans la scene
@@ -45,6 +47,12 @@ public class ManagerUI : MonoBehaviour
     [SerializeField]
     private GameObject _iAFolder; // textbox qui est en haut de la scene
 
+    [SerializeField]
+    private RandomGeneration _managerGeneration; // textbox qui est en haut de la scene
+    [SerializeField]
+    private ModalManager _managerModal; // textbox qui est en haut de la scene
+    [SerializeField]
+    private GameObject _modalChoice;
     [SerializeField]
     private GameObject _allBloc;
     [SerializeField]
@@ -65,6 +73,10 @@ public class ManagerUI : MonoBehaviour
     public Chronometre Chronometre { get => _chronometre; set => _chronometre = value; }
     public GameObject Timer { get => _timer; set => _timer = value; }
     public Button BtnPause { get => _btnPause; set => _btnPause = value; }
+    public RandomGeneration ManagerGeneration { get => _managerGeneration; set => _managerGeneration = value; }
+    public Button BtnChoice { get => _btnChoice; set => _btnChoice = value; }
+    public ModalManager ManagerModal { get => _managerModal; set => _managerModal = value; }
+    public GameObject ModalChoice { get => _modalChoice; set => _modalChoice = value; }
 
     // Start is called before the first frame update
 
@@ -85,7 +97,7 @@ public class ManagerUI : MonoBehaviour
         }
         else
         {
-            gameObject.GetComponent<RandomGeneration>().StartGeneation();
+            ManagerGeneration.StartGeneation();
         }
     }
     public void UpdateView()
@@ -102,6 +114,7 @@ public class ManagerUI : MonoBehaviour
     {
         NbPathfinder = 0;
         InfoPathfinder.GetComponent<Text>().text = "";
+        SetBtnChoice(false);
         UpdateView();
 
     }
@@ -153,15 +166,19 @@ public class ManagerUI : MonoBehaviour
 
     }
 
-    public void Paused(){
-        if(BtnPause.GetComponentInChildren<Text>().text == "Pause"){
+    public void Paused()
+    {
+        if (BtnPause.GetComponentInChildren<Text>().text == "Pause")
+        {
             BtnPause.GetComponentInChildren<Text>().text = "Reprendre";
             StopTimer();
             StopAllPathinder();
-        }else{
+        }
+        else
+        {
             BtnPause.GetComponentInChildren<Text>().text = "Pause";
-           Chronometre.StartChronometer();
-           StartAllPathfinder();
+            Chronometre.StartChronometer();
+            StartAllPathfinder();
         }
     }
     public void StartTimer()
@@ -170,18 +187,21 @@ public class ManagerUI : MonoBehaviour
         Chronometre.StartChronometer();
     }
 
-    public void SetBtnPause(bool info){
+    public void SetBtnPause(bool info)
+    {
         BtnPause.gameObject.SetActive(info);
     }
 
-    public void StopAllPathinder(){
+    public void StopAllPathinder()
+    {
         foreach (Transform child in IAFolder.transform)
         {
             child.gameObject.GetComponent<Pathfinding1>().ChangeSpeed(0);
         }
     }
 
-    public void StartAllPathfinder(){
+    public void StartAllPathfinder()
+    {
         foreach (Transform child in IAFolder.transform)
         {
             child.gameObject.GetComponent<Pathfinding1>().ChangeSpeed(30);
@@ -203,10 +223,39 @@ public class ManagerUI : MonoBehaviour
 
     public void ClearAllPathinder()
     {
-
         foreach (Transform child in IAFolder.transform)
         {
             Destroy(child.gameObject);
         }
+    }
+
+    public void SetBtnChoice(bool value)
+    {
+        BtnChoice.gameObject.SetActive(value);
+    }
+
+    public void StartMode1()
+    {
+        SetBtnChoice(false);
+        RemoveButtonSave();
+        ManagerModal.CloseModal(ModalChoice);
+        // Mode 1. On place 1 entré et 1 sortie et le bot trouve le plus rapide
+
+        ManagerGeneration.GenerateMode1();
+
+    }
+
+    public void StartMode2()
+    {
+        SetBtnChoice(false);
+        RemoveButtonSave();
+        ManagerModal.CloseModal(ModalChoice);
+        // Mode 2. On place 1 entré et le bot trouve toute les sortie possible
+        ManagerGeneration.GenerateMode2();
+    }
+
+    public void StartMode3()
+    {
+        // Mode 3. le bot trouve avec toute les entrés toute les sorties possible
     }
 }
