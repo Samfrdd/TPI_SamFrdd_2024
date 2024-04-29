@@ -1115,8 +1115,6 @@ public class RandomGeneration : MonoBehaviour
             }
             else
             {
-
-
                 connecteur[] lstConnecteur = LstBorderBlocs[i].GetComponentsInChildren<connecteur>();
 
                 foreach (var scriptConnecteur in lstConnecteur)
