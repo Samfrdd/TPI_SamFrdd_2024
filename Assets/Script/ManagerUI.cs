@@ -290,25 +290,52 @@ public class ManagerUI : MonoBehaviour
 
     public void SetNewExit()
     {
-        // Clear tous les bord
-        // Placer bouton 
-        // Tout refermé
+        // ClearAllPathinder();
+        // ManagerModal.CloseModal(ModalInformation);
+        // ClearMapInfo();
+        // // Clear tous les bord
+        // ManagerGeneration.ClearMapBorders();
+        // // Placer bouton 
+        // ManagerGeneration.GenerateBtnExit(3);
+        // // Tout refermé
+
     }
 
-    public void FindNearestExitBot()
+    public IEnumerator FindNearestExitBot()
     {
+        yield return new WaitForSeconds(0.5f);
+
         GameObject theBot = new GameObject();
         float bestDistance = 9999999;
         foreach (Transform child in IAFolder.transform)
         {
             float distance = Vector3.Distance(child.transform.position, ManagerGeneration.SortiChoisi.transform.position);
+            Debug.Log(theBot.name + " : " + distance);
             if (distance < bestDistance)
             {
+                bestDistance = distance;
                 theBot = child.gameObject;
             }
         }
         theBot.GetComponent<MeshRenderer>().enabled = true;
         theBot.GetComponent<TrailRenderer>().enabled = true;
         theBot.GetComponent<TrailRenderer>().material = MaterialYellow;
+        ChangeParentTrace(theBot);
+        Debug.Log("le plus proche est : " + theBot.name);
+    }
+    public void ChangeParentTrace(GameObject child)
+    {
+        GameObject parent;
+
+        parent = child.GetComponent<Pathfinding1>().Parent;
+        parent.GetComponent<MeshRenderer>().enabled = true;
+        parent.GetComponent<TrailRenderer>().enabled = true;
+        parent.GetComponent<TrailRenderer>().material = MaterialYellow;
+
+        if (!parent.GetComponent<Pathfinding1>().IsOriginal)
+        {
+            ChangeParentTrace(parent);
+        }
     }
 }
+

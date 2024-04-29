@@ -16,7 +16,7 @@ public class connecteur : MonoBehaviour
     public GameObject BlockConnecte { get => _blockConnecte; set => _blockConnecte = value; }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _connected = "pasConnecte";
         // _blockConnecte = new GameObject();
@@ -25,13 +25,14 @@ public class connecteur : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
 
-        if (gameObject.CompareTag("mauvais")){
+        if (gameObject.CompareTag("mauvais"))
+        {
             if (other.gameObject.CompareTag("Connecteur"))
             {
                 _connected = "mauvaiseConnection";
@@ -53,7 +54,13 @@ public class connecteur : MonoBehaviour
                 _connected = "mauvaiseConnection";
             }
         }
-       
+
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        // _connected = "pasConnecte";
+        // _blockConnecte = null;
     }
 
 

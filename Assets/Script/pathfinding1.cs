@@ -501,7 +501,7 @@ public class Pathfinding1 : MonoBehaviour
         ManagerUI.SetBtnPause(false);
         ManagerUI.OpenModalInformation();
         ManagerUI.SetPanelTextInformation("Sorti non trouvé");
-        ManagerUI.FindNearestExitBot();
+        StartCoroutine(ManagerUI.FindNearestExitBot());
     }
 
 
