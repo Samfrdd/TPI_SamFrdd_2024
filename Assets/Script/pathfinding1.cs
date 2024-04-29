@@ -201,7 +201,7 @@ public class Pathfinding1 : MonoBehaviour
         if (IsOriginal && _blocked && !NoPathFound)
         {
             NoPathFound = true;
-            BlockPathfinder();
+            StartCoroutine(BlockPathfinder());
             NoPathFoundFunction();
         }
 
@@ -306,7 +306,7 @@ public class Pathfinding1 : MonoBehaviour
                 case 7: // Bloqué
 
                     transform.position = CurrentBloc.transform.position + new Vector3(0, 1, 0);
-                    BlockPathfinder();
+                    StartCoroutine(BlockPathfinder());
                     // IsMoving = false;
                     break;
                 default:
@@ -337,7 +337,7 @@ public class Pathfinding1 : MonoBehaviour
         }
         else
         {
-            BlockPathfinder();
+            StartCoroutine(BlockPathfinder());
             return false;
         }
     }
@@ -409,17 +409,24 @@ public class Pathfinding1 : MonoBehaviour
         this.Parent = parent;
     }
 
-    public void BlockPathfinder()
+    IEnumerator BlockPathfinder()
     {
+        gameObject.GetComponent<TrailRenderer>().enabled = true;
         gameObject.GetComponent<TrailRenderer>().material = AllMaterial[2];
         gameObject.GetComponent<MeshRenderer>().enabled = false;
-
-
-        _blocked = true;
-
+        Blocked = true;
         if (!IsOriginal)
         {
             Parent.GetComponent<Pathfinding1>().CheckIfAllChildrenBlocked();
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Enelever tout
+        if (gameObject.GetComponent<TrailRenderer>().material != AllMaterial[3])
+        {
+            gameObject.GetComponent<TrailRenderer>().enabled = false;
+
         }
 
     }
@@ -465,7 +472,7 @@ public class Pathfinding1 : MonoBehaviour
 
         if (oneIsBloked)
         {
-            BlockPathfinder();
+            StartCoroutine(BlockPathfinder());
         }
     }
 
@@ -492,7 +499,9 @@ public class Pathfinding1 : MonoBehaviour
         ManagerUI.SetBtnSave();
         ManagerUI.StopTimer();
         ManagerUI.SetBtnPause(false);
-
+        ManagerUI.OpenModalInformation();
+        ManagerUI.SetPanelTextInformation("Sorti non trouvé");
+        ManagerUI.FindNearestExitBot();
     }
 
 
@@ -504,10 +513,13 @@ public class Pathfinding1 : MonoBehaviour
         ManagerUI.SetBtnSave();
         ManagerUI.StopTimer();
         ManagerUI.SetBtnPause(false);
+        ManagerUI.OpenModalInformation();
+        ManagerUI.SetPanelTextInformation("Sorti trouvé !");
 
     }
 
-    public void ChangeSpeed(int speed){
+    public void ChangeSpeed(int speed)
+    {
         Speed = speed;
     }
 }

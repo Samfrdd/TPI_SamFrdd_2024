@@ -2641,6 +2641,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Simple Main Menu
       objectReference: {fileID: 0}
+    - target: {fileID: 2127538510577849183, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2132642397424121228, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
       propertyPath: m_textAlignment
       value: 65535
@@ -3196,13 +3200,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 4050164746936831433, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
-    - {fileID: 3411895000281563199, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
-    - {fileID: 2127538510577849179, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
-    - {fileID: 1499515186288888210, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 4050164746936831432, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
-    - {fileID: 3411895000281563198, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
     - {fileID: 1499515186288888301, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 3411895000281563198, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 1499515186288888210, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 2127538510577849179, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 3411895000281563199, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 4050164746936831433, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1499515186279128933, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
     - {fileID: 1499515184574961536, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
@@ -3219,6 +3227,7 @@ PrefabInstance:
     - {fileID: 8680906879011842935, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
     - {fileID: 8680906879782389474, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
     - {fileID: 8680906878836916050, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
+    - {fileID: 3788736881416710704, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4050164745365401723, guid: 8bda2b229956441329797aa7bc0d180f, type: 3}
       insertIndex: -1

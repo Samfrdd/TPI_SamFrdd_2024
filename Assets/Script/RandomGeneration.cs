@@ -89,7 +89,7 @@ public class RandomGeneration : MonoBehaviour
     #endregion
 
     public bool MapCree { get => _mapCree; private set => _mapCree = value; }
-    public List<GameObject> LstEntre { get => LstEntre1; set => LstEntre1 = value; }
+    public List<GameObject> LstEntre { get => _lstEntre; set => _lstEntre = value; }
     public bool Pause { get => _pause; set => _pause = value; }
     public Transform FolderBlocParent { get => _folderBlocParent; set => _folderBlocParent = value; }
     public Transform FolderIaParent { get => _folderIaParent; set => _folderIaParent = value; }
@@ -107,7 +107,6 @@ public class RandomGeneration : MonoBehaviour
     public GameObject EntreChoisi { get => _entreChoisi; set => _entreChoisi = value; }
     public GameObject SortiChoisi { get => _sortiChoisi; set => _sortiChoisi = value; }
     public List<GameObject> AllBlock { get => _allBlock; set => _allBlock = value; }
-    public List<GameObject> LstEntre1 { get => _lstEntre; set => _lstEntre = value; }
     public List<GameObject> LstAllBlocNotConnected { get => _lstAllBlocNotConnected; set => _lstAllBlocNotConnected = value; }
     public GameObject BtnPrefab { get => _btnPrefab; set => _btnPrefab = value; }
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
@@ -337,7 +336,7 @@ public class RandomGeneration : MonoBehaviour
         int index = 0;
 
         // Créer et placer les boutons dynamiquement sur les GameObjects existants
-        foreach (GameObject targetObject in LstEntre1)
+        foreach (GameObject targetObject in LstEntre)
         {
             index++;
             // Convertir la position du GameObject en coordonnées d'écran
@@ -375,7 +374,7 @@ public class RandomGeneration : MonoBehaviour
         ManagerUI.SetTexBoxText("Veuillez sélectionner une sortie !");
 
         int index = 0;
-        List<GameObject> _lstExit = LstEntre1;
+        List<GameObject> _lstExit = LstEntre;
         _lstExit.Remove(EntreChoisi);
 
 
@@ -421,7 +420,7 @@ public class RandomGeneration : MonoBehaviour
         Vector3 position = new Vector3();
         float rotation = 0f;
 
-       
+
         if (entre.parent.gameObject.transform.position.z == 45 && entre.parent.gameObject.transform.position.x == 45)
         {
 
@@ -623,14 +622,14 @@ public class RandomGeneration : MonoBehaviour
         float rotation = 0f;
         Debug.Log(exit.gameObject.name);
 
-        List<GameObject> _lstExit = LstEntre1;
+        List<GameObject> _lstExit = LstEntre;
 
 
         SortiChoisi = exit.gameObject;
 
         _lstExit.Remove(SortiChoisi);
 
-        this.LstEntre1 = _lstExit;
+        this.LstEntre = _lstExit;
 
         if (exit.parent.gameObject.transform.position.z == 45 && exit.parent.gameObject.transform.position.x == 45)
         {
@@ -1096,6 +1095,21 @@ public class RandomGeneration : MonoBehaviour
 
     public void GenerateMode1()
     {
+
+
+        if (AllBlock.Count == 0)
+        {
+            AllBlock.Clear();
+            AddAllBlocFromMaze();
+
+        }
+
+        if (LstEntre.Count == 0)
+        {
+            LstEntre.Clear();
+            GetAllBlocNotConnected();
+        }
+
         generateBtnEnter(1);
     }
 

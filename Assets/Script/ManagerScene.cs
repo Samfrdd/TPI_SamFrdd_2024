@@ -27,7 +27,7 @@ public class ManagerScene : MonoBehaviour
 
     public void ExitApp()
     {
-
+         Application.Quit();
     }
 
 }

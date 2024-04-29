@@ -65,6 +65,7 @@ public class Chronometre : MonoBehaviour
             // Debug.Log("Temps écoulé : " + elapsedTime.ToString("F2")); // Affiche le temps avec deux décimales
 
             gameObject.GetComponent<ManagerUI>().SetTextTimer(FormatTime(ElapsedTime));
+            gameObject.GetComponent<ManagerUI>().SetPanelInformationTime(FormatTime(ElapsedTime));
         }
     }
 }

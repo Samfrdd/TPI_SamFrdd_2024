@@ -54,9 +54,17 @@ public class ManagerUI : MonoBehaviour
     [SerializeField]
     private GameObject _modalChoice;
     [SerializeField]
+    private GameObject _modalInformation;
+    [SerializeField]
+    private GameObject _lblTrouve;
+    [SerializeField]
+    private GameObject _lblTemps;
+    [SerializeField]
     private GameObject _allBloc;
     [SerializeField]
     private Chronometre _chronometre;
+    [SerializeField]
+    private Material _materialYellow;
     private int _nbPathfinder;
 
 
@@ -77,6 +85,12 @@ public class ManagerUI : MonoBehaviour
     public Button BtnChoice { get => _btnChoice; set => _btnChoice = value; }
     public ModalManager ManagerModal { get => _managerModal; set => _managerModal = value; }
     public GameObject ModalChoice { get => _modalChoice; set => _modalChoice = value; }
+    public GameObject ModalInformation { get => _modalInformation; set => _modalInformation = value; }
+    public GameObject LblTrouve { get => _lblTrouve; set => _lblTrouve = value; }
+    public GameObject LblTemps { get => _lblTemps; set => _lblTemps = value; }
+    public Material MaterialYellow { get => _materialYellow; set => _materialYellow = value; }
+
+
 
     // Start is called before the first frame update
 
@@ -257,5 +271,44 @@ public class ManagerUI : MonoBehaviour
     public void StartMode3()
     {
         // Mode 3. le bot trouve avec toute les entrés toute les sorties possible
+    }
+
+    public void OpenModalInformation()
+    {
+        ManagerModal.OpenModal(ModalInformation);
+    }
+
+    public void SetPanelTextInformation(string info)
+    {
+        LblTrouve.GetComponent<Text>().text = info;
+    }
+
+    public void SetPanelInformationTime(string time)
+    {
+        LblTemps.GetComponent<Text>().text = "Temps : " + time;
+    }
+
+    public void SetNewExit()
+    {
+        // Clear tous les bord
+        // Placer bouton 
+        // Tout refermé
+    }
+
+    public void FindNearestExitBot()
+    {
+        GameObject theBot = new GameObject();
+        float bestDistance = 9999999;
+        foreach (Transform child in IAFolder.transform)
+        {
+            float distance = Vector3.Distance(child.transform.position, ManagerGeneration.SortiChoisi.transform.position);
+            if (distance < bestDistance)
+            {
+                theBot = child.gameObject;
+            }
+        }
+        theBot.GetComponent<MeshRenderer>().enabled = true;
+        theBot.GetComponent<TrailRenderer>().enabled = true;
+        theBot.GetComponent<TrailRenderer>().material = MaterialYellow;
     }
 }
