@@ -12,7 +12,7 @@ public class connecteur : MonoBehaviour
 
 
 
-    public string Connected { get => _connected; private set => _connected = value; }
+    public string Connected { get => _connected; set => _connected = value; }
     public GameObject BlockConnecte { get => _blockConnecte; set => _blockConnecte = value; }
 
     // Start is called before the first frame update
@@ -57,11 +57,6 @@ public class connecteur : MonoBehaviour
 
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        // _connected = "pasConnecte";
-        // _blockConnecte = null;
-    }
 
 
 }

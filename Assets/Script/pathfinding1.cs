@@ -455,7 +455,6 @@ public class Pathfinding1 : MonoBehaviour
     public void SetFolderParent(GameObject pathfinder)
     {
         pathfinder.transform.parent = DossierIA.transform;
-
     }
 
     public void CheckIfAllChildrenBlocked()
@@ -475,7 +474,7 @@ public class Pathfinding1 : MonoBehaviour
             StartCoroutine(BlockPathfinder());
         }
     }
-
+    
     public void SetOriginal(bool info)
     {
         IsOriginal = info;

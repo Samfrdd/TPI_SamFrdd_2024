@@ -76,6 +76,8 @@ public class RandomGeneration : MonoBehaviour
     [SerializeField]
     private List<GameObject> _lstEntre; // Liste de toute les entré et sorti possible
     [SerializeField]
+    private List<GameObject> _lstBorderBlocs; // Liste de toute les entré et sorti possible
+    [SerializeField]
     private List<GameObject> _lstAllBlocNotConnected; // Une list pour tester tous les blocs qui n'arrive pas a se connecter
 
     #endregion
@@ -110,7 +112,7 @@ public class RandomGeneration : MonoBehaviour
     public List<GameObject> LstAllBlocNotConnected { get => _lstAllBlocNotConnected; set => _lstAllBlocNotConnected = value; }
     public GameObject BtnPrefab { get => _btnPrefab; set => _btnPrefab = value; }
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
-
+    public List<GameObject> LstBorderBlocs { get => _lstBorderBlocs; set => _lstBorderBlocs = value; }
 
     void Start()
     {
@@ -600,6 +602,7 @@ public class RandomGeneration : MonoBehaviour
         block.name = BlockEnter.name;
         block.transform.parent = FolderBlocParent;
         block.transform.Rotate(0f, rotation, 0f);
+        LstBorderBlocs.Add(block);
 
         RemoveButton();
         if (mode == 1)
@@ -809,6 +812,7 @@ public class RandomGeneration : MonoBehaviour
         block.transform.parent = FolderBlocParent;
         block.name = BlockExit.name;
         block.transform.Rotate(0f, rotation, 0f);
+        LstBorderBlocs.Add(block);
 
         if (mode == 1)
         {
@@ -816,6 +820,11 @@ public class RandomGeneration : MonoBehaviour
             StartCoroutine(CompleteMap());
         }
 
+        if (mode == 3)
+        {
+            RemoveButton();
+            StartCoroutine(CompleteMap());
+        }
 
     }
 
@@ -1005,6 +1014,9 @@ public class RandomGeneration : MonoBehaviour
         block.name = prefab.name;
         block.transform.parent = FolderBlocParent;
         block.transform.Rotate(0f, rotation, 0f);
+
+        LstBorderBlocs.Add(block);
+
     }
 
     IEnumerator CompleteMap(int mode = 1)
@@ -1090,6 +1102,37 @@ public class RandomGeneration : MonoBehaviour
         }
 
         objectsWithTag.Clear();
+    }
+
+    public void ClearMapBorders()
+    {
+        GameObject entre = new GameObject();
+        for (int i = 0; i < LstBorderBlocs.Count; i++)
+        {
+            if (i == 0)
+            {
+                entre = LstBorderBlocs[i];
+            }
+            else
+            {
+
+
+                connecteur[] lstConnecteur = LstBorderBlocs[i].GetComponentsInChildren<connecteur>();
+
+                foreach (var scriptConnecteur in lstConnecteur)
+                {
+                    if (scriptConnecteur.BlockConnecte)
+                    {
+                        scriptConnecteur.BlockConnecte.GetComponent<connecteur>().Connected = "pasConnecte";
+                    }
+                }
+
+                Destroy(LstBorderBlocs[i]);
+
+            }
+        }
+        LstBorderBlocs.Clear();
+        LstBorderBlocs.Add(entre);
     }
 
 

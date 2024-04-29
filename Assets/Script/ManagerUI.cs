@@ -290,13 +290,13 @@ public class ManagerUI : MonoBehaviour
 
     public void SetNewExit()
     {
-        // ClearAllPathinder();
-        // ManagerModal.CloseModal(ModalInformation);
-        // ClearMapInfo();
+        ClearAllPathinder();
+        ManagerModal.CloseModal(ModalInformation);
+        ClearMapInfo();
         // // Clear tous les bord
-        // ManagerGeneration.ClearMapBorders();
+        ManagerGeneration.ClearMapBorders();
         // // Placer bouton 
-        // ManagerGeneration.GenerateBtnExit(3);
+        ManagerGeneration.GenerateBtnExit(3);
         // // Tout refermé
 
     }
@@ -325,17 +325,24 @@ public class ManagerUI : MonoBehaviour
     }
     public void ChangeParentTrace(GameObject child)
     {
-        GameObject parent;
+        GameObject parent = null;
 
-        parent = child.GetComponent<Pathfinding1>().Parent;
-        parent.GetComponent<MeshRenderer>().enabled = true;
-        parent.GetComponent<TrailRenderer>().enabled = true;
-        parent.GetComponent<TrailRenderer>().material = MaterialYellow;
-
-        if (!parent.GetComponent<Pathfinding1>().IsOriginal)
+        if (!child.GetComponent<Pathfinding1>().IsOriginal)
         {
-            ChangeParentTrace(parent);
+            parent = child.GetComponent<Pathfinding1>().Parent;
+            parent.GetComponent<MeshRenderer>().enabled = true;
+            parent.GetComponent<TrailRenderer>().enabled = true;
+            parent.GetComponent<TrailRenderer>().material = MaterialYellow;
+
+            if (!parent.GetComponent<Pathfinding1>().IsOriginal)
+            {
+                ChangeParentTrace(parent);
+            }
         }
+
+
+
+
     }
 }
 
