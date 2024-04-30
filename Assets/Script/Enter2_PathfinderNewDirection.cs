@@ -45,8 +45,11 @@ public class Enter2_PathfinderNewDirection : MonoBehaviour
         GameManager.GetComponent<ManagerUI>().RemoveButtonGeneration();
         GameManager.GetComponent<ManagerUI>().RemoveButtonSave();
         GameManager.GetComponent<ManagerUI>().RemoveButtonStart();
+        GameManager.GetComponent<ManagerUI>().SetBtnInformation(false);
+
         GameManager.GetComponent<ManagerUI>().StartTimer();
         GameManager.GetComponent<ManagerUI>().SetBtnPause(true);
+        GameManager.GetComponent<ManagerUI>().AlgoEnCours = true;
 
 
     }

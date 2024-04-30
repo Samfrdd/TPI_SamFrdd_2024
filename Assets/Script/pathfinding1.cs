@@ -28,6 +28,8 @@ public class Pathfinding1 : MonoBehaviour
     [SerializeField]
     private float _distance = 0;
 
+    private float _realDistance = 0;
+
     [SerializeField]
     private bool _blocked = false;
 
@@ -114,12 +116,14 @@ public class Pathfinding1 : MonoBehaviour
     public RayCastScript ScriptLayerLeft { get => _scriptLayerLeft; private set => _scriptLayerLeft = value; }
     public RayCastScript ScriptLayerRight { get => _scriptLayerRight; private set => _scriptLayerRight = value; }
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
+    public float RealDistance { get => _realDistance; set => _realDistance = value; }
 
     private void Start()
     {
         IsMoving = true;
         LastPosition = transform.position;
         Distance = 0;
+        RealDistance = 0;
         CanDuplicate = false;
         HasDuplicate = false;
         Blocked = false;
@@ -192,7 +196,7 @@ public class Pathfinding1 : MonoBehaviour
 
         // Mise à jour de la distance totale parcourue
         Distance += distanceFrame;
-
+        RealDistance += distanceFrame;
         // Mettre à jour la position précédente pour la prochaine frame
         LastPosition = transform.position;
     }
@@ -474,7 +478,7 @@ public class Pathfinding1 : MonoBehaviour
             StartCoroutine(BlockPathfinder());
         }
     }
-    
+
     public void SetOriginal(bool info)
     {
         IsOriginal = info;
@@ -494,27 +498,36 @@ public class Pathfinding1 : MonoBehaviour
     {
         ManagerUI.SetTexBoxText("Aucun chemin trouvé !");
         ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
-        ManagerUI.SetBtnStart();
-        ManagerUI.SetBtnSave();
         ManagerUI.StopTimer();
         ManagerUI.SetBtnPause(false);
+        ManagerUI.SetBtnInformation(true);
         ManagerUI.OpenModalInformation();
+        ManagerUI.SetBtnStart(1);
+        ManagerUI.SetDistanceInfoText("");
         ManagerUI.SetPanelTextInformation("Sorti non trouvé");
-        StartCoroutine(ManagerUI.FindNearestExitBot());
+        if (ManagerUI.ModeEnCours == 1)
+        {
+            StartCoroutine(ManagerUI.FindNearestExitBot());
+        }
     }
 
 
     public void ExitFound()
     {
-        ManagerUI.SetTexBoxText("Le pathFinder a trouvé la sortie !");
-        ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
-        ManagerUI.SetBtnStart();
-        ManagerUI.SetBtnSave();
-        ManagerUI.StopTimer();
-        ManagerUI.SetBtnPause(false);
-        ManagerUI.OpenModalInformation();
-        ManagerUI.SetPanelTextInformation("Sorti trouvé !");
+        if (ManagerUI.ModeEnCours == 1)
+        {
+            ManagerUI.AlgoEnCours = false;
 
+            ManagerUI.SetTexBoxText("Le pathFinder a trouvé la sortie !");
+            ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
+            ManagerUI.StopTimer();
+            ManagerUI.SetBtnPause(false); 
+            ManagerUI.SetBtnStart(1);
+            ManagerUI.SetBtnInformation(true);
+            ManagerUI.OpenModalInformation();
+            ManagerUI.SetPanelTextInformation("Sorti trouvé !");
+            ManagerUI.SetDistanceInfoText("Le bot a parcouru " + ManagerUI.GetAllDistanceFromBot().ToString() + " mètres pour trouvé la sortie");
+        }
     }
 
     public void ChangeSpeed(int speed)

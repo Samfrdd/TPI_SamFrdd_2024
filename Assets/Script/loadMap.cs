@@ -76,7 +76,6 @@ public class LoadMap : MonoBehaviour
             block.transform.parent = FolderBlocParent;
         }
 
-        ManagerUI.SetBtnStart();
+        ManagerUI.SetBtnChoice(true);
     }
-
 }

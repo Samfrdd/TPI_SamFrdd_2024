@@ -30,6 +30,8 @@ public class ManagerUI : MonoBehaviour
     [SerializeField]
     private Button _btnChoice; // Btn qui permet de lancer le pathfinder    
     [SerializeField]
+    private Button _btnInformation; // Btn qui permet de lancer le pathfinder    
+    [SerializeField]
     private Button _btnPause; // Btn qui permet de lancer le pathfinder
     [SerializeField]
     private Button _btnRestartGenerator; // Btn regénerer qui est dans la scene
@@ -58,6 +60,8 @@ public class ManagerUI : MonoBehaviour
     [SerializeField]
     private GameObject _lblTrouve;
     [SerializeField]
+    private GameObject _lblDistanceInfo;
+    [SerializeField]
     private GameObject _lblTemps;
     [SerializeField]
     private GameObject _allBloc;
@@ -65,7 +69,20 @@ public class ManagerUI : MonoBehaviour
     private Chronometre _chronometre;
     [SerializeField]
     private Material _materialYellow;
+
+    [SerializeField]
+    private List<GameObject> _lstEntry;
+
     private int _nbPathfinder;
+
+    [SerializeField]
+    private int _modeEnCours;
+
+    private bool _algoEnCours;
+
+    private int _nbExitFound = 0;
+
+
 
 
     public Button BtnRestartGenerator { get => _btnRestartGenerator; set => _btnRestartGenerator = value; }
@@ -89,6 +106,12 @@ public class ManagerUI : MonoBehaviour
     public GameObject LblTrouve { get => _lblTrouve; set => _lblTrouve = value; }
     public GameObject LblTemps { get => _lblTemps; set => _lblTemps = value; }
     public Material MaterialYellow { get => _materialYellow; set => _materialYellow = value; }
+    public int ModeEnCours { get => _modeEnCours; set => _modeEnCours = value; }
+    public bool AlgoEnCours { get => _algoEnCours; set => _algoEnCours = value; }
+    public int NbExitFound { get => _nbExitFound; set => _nbExitFound = value; }
+    public GameObject LblDistanceInfo { get => _lblDistanceInfo; set => _lblDistanceInfo = value; }
+    public List<GameObject> LstEntry { get => _lstEntry; set => _lstEntry = value; }
+    public Button BtnInformation { get => _btnInformation; set => _btnInformation = value; }
 
 
 
@@ -98,7 +121,7 @@ public class ManagerUI : MonoBehaviour
     public void Start()
     {
         Debug.Log(" random Gen player : " + PlayerPrefs.HasKey("nameMap"));
-
+        AlgoEnCours = false;
         if (PlayerPrefs.HasKey("nameMap"))
         {
             string nameMap = PlayerPrefs.GetString("nameMap"); // Récupérez le paramètre de PlayerPrefs
@@ -114,9 +137,32 @@ public class ManagerUI : MonoBehaviour
             ManagerGeneration.StartGeneation();
         }
     }
+
+    void Update()
+    {
+        if (ModeEnCours == 2 && AlgoEnCours)
+        {
+            if (CheckIfAllBotHaveFinish())
+            {
+                AlgoEnCours = false;
+                SetTexBoxText("Les pathFinder ont trouvé toutes les sorties !");
+                BtnRestartGenerator.gameObject.SetActive(true);
+                SetBtnStart(2);
+                StopTimer();
+                SetBtnPause(false);
+                OpenModalInformation();
+                SetBtnInformation(true);
+                Debug.Log("... " + NbExitFound);
+                string text = "Nombre de sorti trouvé : " + NbExitFound.ToString();
+                SetPanelTextInformation(text);
+                SetDistanceInfoText("Les bots ont parcouru " + GetAllDistanceFromBot().ToString() + " mètre pour trouvé les sorties");
+            }
+        }
+
+    }
     public void UpdateView()
     {
-        InfoPathfinder.GetComponent<Text>().text = " Nombre de pathfinder : " + _nbPathfinder;
+
 
     }
     public void RemoveButtonGeneration()
@@ -124,10 +170,19 @@ public class ManagerUI : MonoBehaviour
         BtnRestartGenerator.gameObject.SetActive(false);
     }
 
+    public void AddEntry(GameObject entry)
+    {
+        LstEntry.Add(entry);
+    }
+
+    public void ClearListEntry()
+    {
+        LstEntry.Clear();
+    }
+
     public void ClearInfo()
     {
         NbPathfinder = 0;
-        InfoPathfinder.GetComponent<Text>().text = "";
         SetBtnChoice(false);
         UpdateView();
 
@@ -168,16 +223,15 @@ public class ManagerUI : MonoBehaviour
         TextBox.GetComponent<Text>().text = text;
     }
 
-    public void SetBtnStart()
+    public void SetBtnStart(int mode)
     {
         BtnStart.onClick.RemoveAllListeners();
         BtnStart.onClick.AddListener(() => GameObject.FindWithTag("Enter").GetComponent<Enter2_PathfinderNewDirection>().StartPathfinder());
         BtnStart.gameObject.SetActive(true);
-
         // clear toute les info de la carte
         // passage du pathfinder
         // pathfinder
-
+        ModeEnCours = mode;
     }
 
     public void Paused()
@@ -248,28 +302,69 @@ public class ManagerUI : MonoBehaviour
         BtnChoice.gameObject.SetActive(value);
     }
 
+    public void SetBtnInformation(bool value)
+    {
+        BtnInformation.gameObject.SetActive(value);
+    }
+
+
     public void StartMode1()
     {
-        SetBtnChoice(false);
-        RemoveButtonSave();
-        ManagerModal.CloseModal(ModalChoice);
-        // Mode 1. On place 1 entré et 1 sortie et le bot trouve le plus rapide
+        // -------------------------- variable
+        ModeEnCours = 1;
 
+        NbExitFound = 0;
+
+        // -------------------------- Affichage
+
+        RemoveButtonSave();
+        RemoveButtonStart();
+        SetBtnChoice(false);
+        RemoveButtonGeneration();
+        SetBtnInformation(false);
+        ManagerModal.CloseModal(ModalChoice);
+        
+        // Mode 1. On place 1 entré et 1 sortie et le bot trouve le plus rapide
         ManagerGeneration.GenerateMode1();
 
     }
 
     public void StartMode2()
     {
+        // -------------------------- variable
+
+        ModeEnCours = 2;
+        NbExitFound = 0;
+        // -------------------------- Affichage
+
         SetBtnChoice(false);
         RemoveButtonSave();
+        RemoveButtonStart();
+        RemoveButtonGeneration();
+        SetBtnInformation(false);
+
         ManagerModal.CloseModal(ModalChoice);
+
         // Mode 2. On place 1 entré et le bot trouve toute les sortie possible
         ManagerGeneration.GenerateMode2();
     }
 
     public void StartMode3()
     {
+        // -------------------------- variable
+        NbExitFound = 0;
+        ModeEnCours = 3;
+        // -------------------------- Affichage
+        RemoveButtonGeneration();
+        SetBtnInformation(false);
+
+        RemoveButtonSave();
+        SetBtnChoice(false);
+        RemoveButtonStart();
+        ManagerModal.CloseModal(ModalChoice);
+
+
+
         // Mode 3. le bot trouve avec toute les entrés toute les sorties possible
     }
 
@@ -278,9 +373,19 @@ public class ManagerUI : MonoBehaviour
         ManagerModal.OpenModal(ModalInformation);
     }
 
+    public void CloseModalInformation()
+    {
+        ManagerModal.CloseModal(ModalInformation);
+    }
+
     public void SetPanelTextInformation(string info)
     {
         LblTrouve.GetComponent<Text>().text = info;
+    }
+
+    public void SetDistanceInfoText(string info)
+    {
+        LblDistanceInfo.GetComponent<Text>().text = info;
     }
 
     public void SetPanelInformationTime(string time)
@@ -290,14 +395,26 @@ public class ManagerUI : MonoBehaviour
 
     public void SetNewExit()
     {
-        ClearAllPathinder();
-        ManagerModal.CloseModal(ModalInformation);
-        ClearMapInfo();
-        // // Clear tous les bord
-        ManagerGeneration.ClearMapBorders();
-        // // Placer bouton 
-        ManagerGeneration.GenerateBtnExit(3);
-        // // Tout refermé
+        if (ModeEnCours == 2)
+        {
+            Debug.Log("Action non dispobible dans ce mode de jeux");
+        }
+        else
+        {
+            ClearAllPathinder();
+            SetBtnInformation(false);
+            RemoveButtonSave();
+            RemoveButtonStart();
+            RemoveButtonGeneration();
+            ManagerModal.CloseModal(ModalInformation);
+            ClearMapInfo();
+            // // Clear tous les bord
+            ManagerGeneration.ClearMapBordersWithoutEntry();
+            // // Placer bouton 
+            ManagerGeneration.GenerateBtnExit(3);
+            // // Tout refermé
+        }
+
 
     }
 
@@ -339,9 +456,42 @@ public class ManagerUI : MonoBehaviour
                 ChangeParentTrace(parent);
             }
         }
+    }
 
+    public bool CheckIfAllBotHaveFinish()
+    {
+        bool isFinish = true;
+        foreach (Transform child in IAFolder.transform)
+        {
+            if (child.GetComponent<Pathfinding1>().Blocked || child.GetComponent<Pathfinding1>().Trouve)
+            {
+                // Si il a trouve la solution ou est mort dans un mur
+            }
+            else
+            {
+                isFinish = false;
+            }
+        }
 
+        return isFinish;
+    }
 
+    public float GetAllDistanceFromBot()
+    {
+
+        float distance = 0;
+        foreach (Transform child in IAFolder.transform)
+        {
+            if (child.GetComponent<Pathfinding1>().Trouve)
+            {
+                distance += child.GetComponent<Pathfinding1>().RealDistance;
+            }
+        }
+        return distance;
+    }
+
+    public void CalculerFitnesForOneEntry()
+    {
 
     }
 }

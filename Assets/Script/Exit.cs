@@ -15,7 +15,7 @@ public class Exit : MonoBehaviour
 {
     // Start is called before the first frame update
 
-   [SerializeField]
+    [SerializeField]
     private Material _material;
 
     public Material Material { get => _material; set => _material = value; }
@@ -30,6 +30,7 @@ public class Exit : MonoBehaviour
             other.gameObject.GetComponent<TrailRenderer>().material = Material;
             other.gameObject.GetComponent<Pathfinding1>().FindExit();
             other.gameObject.GetComponent<Pathfinding1>().StopMovement();
+            GameObject.FindWithTag("gameManager").GetComponent<ManagerUI>().NbExitFound++;
         }
     }
 }

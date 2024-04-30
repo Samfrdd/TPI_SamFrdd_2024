@@ -40,6 +40,7 @@ public class connecteur : MonoBehaviour
             else if (other.gameObject.CompareTag("mauvais"))
             {
                 _connected = "connecte";
+                 _blockConnecte = other.gameObject;
             }
         }
         else

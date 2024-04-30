@@ -72,6 +72,7 @@ public class RandomGeneration : MonoBehaviour
     private GameObject _entreChoisi; // Entré choisi par l'utilisateur
     [SerializeField]
     private GameObject _sortiChoisi; // Entré choisi par l'utilisateur
+    [SerializeField]
     private List<GameObject> _allBlock = new List<GameObject>(); // List de tous les bloc instancié
     [SerializeField]
     private List<GameObject> _lstEntre; // Liste de toute les entré et sorti possible
@@ -251,12 +252,15 @@ public class RandomGeneration : MonoBehaviour
         ManagerUI.BtnRestartGenerator.enabled = true;
         ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
 
+        ManagerUI.SetBtnChoice(true);
         print("La map a été générer !");
+
     }
 
     // Fonctions qui ajoute tous les blocs de la map dans la liste AllBlock
     public void AddAllBlocFromMaze()
     {
+        AllBlock.Clear();
         int nombreEnfants = FolderBlocParent.childCount;
         for (int i = 0; i < nombreEnfants; i++)
         {
@@ -1027,7 +1031,10 @@ public class RandomGeneration : MonoBehaviour
 
         GetAllBlocNotConnected();
 
-        LstAllBlocNotConnected.Remove(SortiChoisi);
+        if (mode != 2)
+        {
+            LstAllBlocNotConnected.Remove(SortiChoisi);
+        }
 
         for (int i = 0; i < LstAllBlocNotConnected.Count; i++)
         {
@@ -1053,7 +1060,7 @@ public class RandomGeneration : MonoBehaviour
 
 
 
-        ManagerUI.SetBtnStart();
+        ManagerUI.SetBtnStart(mode);
 
         MapCree = true;
     }
@@ -1078,9 +1085,13 @@ public class RandomGeneration : MonoBehaviour
     // Fonctions qui appele toute les fonctions pour régénerer une carte
     public void RestartGeneration()
     {
+
         RemoveButton();
         ClearMap();
         ManagerUI.ClearInfo();
+        ManagerUI.OpenModalInformation();
+        ManagerUI.CloseModalInformation();
+        ManagerUI.SetBtnInformation(false);
         StartGeneation();
 
     }
@@ -1104,7 +1115,7 @@ public class RandomGeneration : MonoBehaviour
         objectsWithTag.Clear();
     }
 
-    public void ClearMapBorders()
+    public void ClearMapBordersWithoutEntry()
     {
         GameObject entre = new GameObject();
         for (int i = 0; i < LstBorderBlocs.Count; i++)
@@ -1125,7 +1136,7 @@ public class RandomGeneration : MonoBehaviour
                     }
                 }
 
-                Destroy(LstBorderBlocs[i]);
+                DestroyImmediate(LstBorderBlocs[i]);
 
             }
         }
@@ -1133,29 +1144,75 @@ public class RandomGeneration : MonoBehaviour
         LstBorderBlocs.Add(entre);
     }
 
+    public void ClearMapBorder()
+    {
+        for (int i = 0; i < LstBorderBlocs.Count; i++)
+        {
+            connecteur[] lstConnecteur = LstBorderBlocs[i].GetComponentsInChildren<connecteur>();
+            foreach (var scriptConnecteur in lstConnecteur)
+            {
+                if (scriptConnecteur.BlockConnecte)
+                {
+                    scriptConnecteur.BlockConnecte.GetComponent<connecteur>().Connected = "pasConnecte";
+                    Debug.Log("passage");
+                }
+            }
+            DestroyImmediate(LstBorderBlocs[i]);
+
+        }
+        LstBorderBlocs.Clear();
+    }
+
 
     public void GenerateMode1()
     {
 
+        ClearMapBorder();
+        ManagerUI.ClearAllPathinder();
+        ManagerUI.ClearMapInfo();
 
-        if (AllBlock.Count == 0)
+
+        AllBlock.Clear();
+        AddAllBlocFromMaze();
+
+        LstEntre.Clear();
+        GetAllBlocNotConnected();
+
+
+        if (EntreChoisi != null)
         {
-            AllBlock.Clear();
-            AddAllBlocFromMaze();
-
+            LstEntre.Add(EntreChoisi);
         }
 
-        if (LstEntre.Count == 0)
+        if (SortiChoisi != null)
         {
-            LstEntre.Clear();
-            GetAllBlocNotConnected();
+            LstEntre.Add(SortiChoisi);
         }
-
         generateBtnEnter(1);
     }
 
     public void GenerateMode2()
     {
+        ClearMapBorder();
+        ManagerUI.ClearAllPathinder();
+        ManagerUI.ClearMapInfo();
+
+
+        AllBlock.Clear();
+        AddAllBlocFromMaze();
+
+        LstEntre.Clear();
+        GetAllBlocNotConnected();
+
+        if (EntreChoisi != null)
+        {
+            LstEntre.Add(EntreChoisi);
+        }
+
+        if (SortiChoisi != null)
+        {
+            LstEntre.Add(SortiChoisi);
+        }
         generateBtnEnter(2);
     }
 
