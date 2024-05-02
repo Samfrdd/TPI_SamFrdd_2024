@@ -614,7 +614,7 @@ public class RandomGeneration : MonoBehaviour
             GenerateBtnExit(mode);
         }
 
-        if (mode == 2)
+        if (mode == 2 || mode == 3)
         {
             StartCoroutine(CompleteMap(mode));
         }
@@ -627,7 +627,7 @@ public class RandomGeneration : MonoBehaviour
         GameObject block;
         Vector3 position = new Vector3();
         float rotation = 0f;
-        Debug.Log(exit.gameObject.name);
+
 
         List<GameObject> _lstExit = LstEntre;
 
@@ -824,10 +824,16 @@ public class RandomGeneration : MonoBehaviour
             StartCoroutine(CompleteMap());
         }
 
+        if (mode == 2)
+        {
+            RemoveButton();
+            StartCoroutine(CompleteMap(2));
+        }
+
         if (mode == 3)
         {
             RemoveButton();
-            StartCoroutine(CompleteMap());
+            StartCoroutine(CompleteMap(3));
         }
 
     }
@@ -1027,11 +1033,10 @@ public class RandomGeneration : MonoBehaviour
     {
         ManagerUI.SetTexBoxText("Génération terminer ! ");
 
-        yield return new WaitForSeconds(0.02f);
-
+        yield return new WaitForSeconds(0.05f);
         GetAllBlocNotConnected();
 
-        if (mode != 2)
+        if (mode != 2 || mode != 3)
         {
             LstAllBlocNotConnected.Remove(SortiChoisi);
         }
@@ -1045,9 +1050,13 @@ public class RandomGeneration : MonoBehaviour
             }
             else
             {
-                if (mode == 2 || mode == 3)
+                if (mode == 2)
                 {
                     AjouterExit(LstAllBlocNotConnected[i].transform);
+                }
+                else if (mode == 3)
+                {
+                    AjouterExit(LstAllBlocNotConnected[i].transform, 3);
                 }
                 else
                 {
@@ -1059,8 +1068,10 @@ public class RandomGeneration : MonoBehaviour
         Debug.Log("Map termnimé");
 
 
-
-        ManagerUI.SetBtnStart(mode);
+        if (mode != 3)
+        {
+            ManagerUI.SetBtnStart(mode);
+        }
 
         MapCree = true;
     }
@@ -1197,7 +1208,6 @@ public class RandomGeneration : MonoBehaviour
         ManagerUI.ClearAllPathinder();
         ManagerUI.ClearMapInfo();
 
-
         AllBlock.Clear();
         AddAllBlocFromMaze();
 
@@ -1216,8 +1226,19 @@ public class RandomGeneration : MonoBehaviour
         generateBtnEnter(2);
     }
 
-    public void GenerateMode3()
+
+    public void ClearAndUpdateAllMapInfo()
     {
+        // Clear map info
+        ClearMapBorder();
+        ManagerUI.ClearAllPathinder();
+        ManagerUI.ClearMapInfo();
+
+        AllBlock.Clear();
+        AddAllBlocFromMaze();
+
+        LstEntre.Clear();
+        GetAllBlocNotConnected();
 
     }
 

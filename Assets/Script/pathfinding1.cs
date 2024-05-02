@@ -88,7 +88,7 @@ public class Pathfinding1 : MonoBehaviour
     private RayCastScript _scriptLayerLeft;
     [SerializeField]
     private RayCastScript _scriptLayerRight;
-
+    
     public bool Blocked { get => _blocked; private set => _blocked = value; }
     public bool Trouve { get => _trouve; private set => _trouve = value; }
     public GameObject Parent { get => _parent; private set => _parent = value; }

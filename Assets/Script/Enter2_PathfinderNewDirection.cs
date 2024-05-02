@@ -22,7 +22,6 @@ public class Enter2_PathfinderNewDirection : MonoBehaviour
     [SerializeField]
     private GameObject _gameManager;
 
-
     public GameObject PrefabPathfinder { get => _prefabPathfinder; set => _prefabPathfinder = value; }
     public GameObject PrefabParent { get => _prefabParent; set => _prefabParent = value; }
     public GameObject GameManager { get => _gameManager; set => _gameManager = value; }

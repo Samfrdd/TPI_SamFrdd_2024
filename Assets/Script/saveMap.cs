@@ -108,7 +108,7 @@ public class MapManager : MonoBehaviour
             Debug.LogError("Map file not found: " + filePath);
             return null;
         }
-
+        
         // Désérialiser les données de la carte depuis le fichier XML
         XmlSerializer serializer = new XmlSerializer(typeof(MapData));
         using (StreamReader streamReader = new StreamReader(filePath))

@@ -39,18 +39,36 @@ public class ManagerUI : MonoBehaviour
     private GameObject _textBox; // textbox qui est en haut de la scene
     [SerializeField]
     private GameObject _timer; // textbox qui est en haut de la scene
+    [SerializeField]
+    private GameObject _scrollViewBtnEntry; // textbox qui est en haut de la scene
+    [SerializeField]
+    private GameObject _scrollViewBtnEntryContent; // textbox qui est en haut de la scene
+    [SerializeField]
+    private GameObject _prefabBtnScrollView; // textbox qui est en haut de la scene
 
     [SerializeField]
     private GameObject _lblConfirmationSave; // textbox qui est en haut de la scene
 
     [SerializeField]
     private GameObject _infoPathfinder; // textbox qui est en haut de la scene
+    [SerializeField]
+    private GameObject _lblEntryParent; // textbox qui est en haut de la scene   
+    [SerializeField]
+    private GameObject _lblEntry; // textbox qui est en haut de la scene   
+    [SerializeField]
+    private GameObject _lblDistance; // textbox qui est en haut de la scene  
+    [SerializeField]
+    private GameObject _lblNbExit; // textbox qui est en haut de la scene    
+    [SerializeField]
+    private GameObject _lblFitness; // textbox qui est en haut de la scene
 
     [SerializeField]
     private GameObject _iAFolder; // textbox qui est en haut de la scene
 
     [SerializeField]
     private RandomGeneration _managerGeneration; // textbox qui est en haut de la scene
+    [SerializeField]
+    private AutomaticManager _automaticManager; // textbox qui est en haut de la scene
     [SerializeField]
     private ModalManager _managerModal; // textbox qui est en haut de la scene
     [SerializeField]
@@ -112,6 +130,16 @@ public class ManagerUI : MonoBehaviour
     public GameObject LblDistanceInfo { get => _lblDistanceInfo; set => _lblDistanceInfo = value; }
     public List<GameObject> LstEntry { get => _lstEntry; set => _lstEntry = value; }
     public Button BtnInformation { get => _btnInformation; set => _btnInformation = value; }
+    public AutomaticManager AutomaticManager { get => _automaticManager; set => _automaticManager = value; }
+    public GameObject ScrollViewBtnEntry { get => _scrollViewBtnEntry; set => _scrollViewBtnEntry = value; }
+    public GameObject ScrollViewBtnEntryContent { get => _scrollViewBtnEntryContent; set => _scrollViewBtnEntryContent = value; }
+    public GameObject PrefabBtnScrollView { get => _prefabBtnScrollView; set => _prefabBtnScrollView = value; }
+    public GameObject LblEntry { get => _lblEntry; set => _lblEntry = value; }
+    public GameObject LblDistance { get => _lblDistance; set => _lblDistance = value; }
+    public GameObject LblNbExit { get => _lblNbExit; set => _lblNbExit = value; }
+    public GameObject LblFitness { get => _lblFitness; set => _lblFitness = value; }
+    public GameObject LblEntryParent { get => _lblEntryParent; set => _lblEntryParent = value; }
+
 
 
 
@@ -164,6 +192,11 @@ public class ManagerUI : MonoBehaviour
     {
 
 
+    }
+
+    public void ClearNbExitFound()
+    {
+        NbExitFound = 0;
     }
     public void RemoveButtonGeneration()
     {
@@ -312,18 +345,16 @@ public class ManagerUI : MonoBehaviour
     {
         // -------------------------- variable
         ModeEnCours = 1;
-
         NbExitFound = 0;
-
         // -------------------------- Affichage
 
+        SetBtnChoice(false);
         RemoveButtonSave();
         RemoveButtonStart();
-        SetBtnChoice(false);
         RemoveButtonGeneration();
         SetBtnInformation(false);
         ManagerModal.CloseModal(ModalChoice);
-        
+
         // Mode 1. On place 1 entré et 1 sortie et le bot trouve le plus rapide
         ManagerGeneration.GenerateMode1();
 
@@ -332,7 +363,6 @@ public class ManagerUI : MonoBehaviour
     public void StartMode2()
     {
         // -------------------------- variable
-
         ModeEnCours = 2;
         NbExitFound = 0;
         // -------------------------- Affichage
@@ -342,7 +372,6 @@ public class ManagerUI : MonoBehaviour
         RemoveButtonStart();
         RemoveButtonGeneration();
         SetBtnInformation(false);
-
         ManagerModal.CloseModal(ModalChoice);
 
         // Mode 2. On place 1 entré et le bot trouve toute les sortie possible
@@ -355,17 +384,15 @@ public class ManagerUI : MonoBehaviour
         NbExitFound = 0;
         ModeEnCours = 3;
         // -------------------------- Affichage
+        SetBtnChoice(false);
+        RemoveButtonSave();
+        RemoveButtonStart();
         RemoveButtonGeneration();
         SetBtnInformation(false);
-
-        RemoveButtonSave();
-        SetBtnChoice(false);
-        RemoveButtonStart();
         ManagerModal.CloseModal(ModalChoice);
-
-
-
         // Mode 3. le bot trouve avec toute les entrés toute les sorties possible
+        AutomaticManager.StartModeAuto();
+
     }
 
     public void OpenModalInformation()
@@ -490,9 +517,68 @@ public class ManagerUI : MonoBehaviour
         return distance;
     }
 
-    public void CalculerFitnesForOneEntry()
+    public void SetBtnInScrollView()
     {
+        Debug.Log("creation");
+        float ContentHeight = 0;
 
+
+        foreach (var Entry in AutomaticManager.LstAllEntryData)
+        {
+            // Instancier le bouton à partir du prefab
+            GameObject buttonGO = Instantiate(PrefabBtnScrollView, new Vector3(0, 0, 0), Quaternion.identity, ScrollViewBtnEntryContent.transform);
+
+            // D�finir le parent du bouton
+            buttonGO.transform.SetParent(ScrollViewBtnEntryContent.transform, false); // Ne pas conserver la rotation et l'échelle du parent
+
+            Text buttonText = buttonGO.GetComponentInChildren<Text>();
+            if (buttonText != null)
+            {
+                buttonText.text = Entry.Nom + " : " + Entry.EntryFitness.ToString();
+
+                // Ajuster la taille du bouton pour correspondre à la taille du texte
+                RectTransform buttonRect = buttonGO.GetComponent<RectTransform>();
+                buttonRect.sizeDelta = new Vector2(buttonText.preferredWidth + 20, buttonText.preferredHeight + 20);
+                ContentHeight += buttonRect.sizeDelta.y + 5;
+
+            }
+            // Acc�der au composant Button du bouton et ajouter une fonction à appeler avec un paramètre
+            Button button = buttonGO.GetComponent<Button>();
+            if (button != null)
+            {
+                // Ajouter un écouteur d'évènement au bouton avec une méthode à appeler et un paramètre
+                button.onClick.AddListener(() => SetInfoEntry(Entry));
+            }
+        }
+
+        Vector2 currentSize = ScrollViewBtnEntryContent.GetComponent<RectTransform>().sizeDelta;
+
+        // Modifier la hauteur
+        currentSize.y = ContentHeight;
+
+        // Appliquer la nouvelle taille
+        ScrollViewBtnEntryContent.GetComponent<RectTransform>().sizeDelta = currentSize;
+    }
+
+    public void SetActiveInfoEntryParent(bool value)
+    {
+        LblEntryParent.SetActive(value);
+    }
+    public void SetInfoEntry(EntryData entryData)
+    {
+        Debug.Log("coucou : " + entryData.Distance + " " + entryData.NbExit + " " + entryData.EntryFitness);
+        SetActiveInfoEntryParent(true);
+        LblEntry.GetComponent<Text>().text = entryData.Nom;
+        LblDistance.GetComponent<Text>().text = "Distance : " + entryData.Distance.ToString();
+        LblNbExit.GetComponent<Text>().text = "Nb sortie : " + entryData.NbExit.ToString();
+        LblFitness.GetComponent<Text>().text = "Fitness : " + entryData.EntryFitness.ToString();
+
+        // Affiché le bon tracé en vert
+    }
+
+    public void SetScrollViewBtnEntry(bool value)
+    {
+        ScrollViewBtnEntry.SetActive(value);
     }
 }
 
