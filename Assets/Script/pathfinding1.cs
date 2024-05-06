@@ -88,7 +88,7 @@ public class Pathfinding1 : MonoBehaviour
     private RayCastScript _scriptLayerLeft;
     [SerializeField]
     private RayCastScript _scriptLayerRight;
-    
+
     public bool Blocked { get => _blocked; private set => _blocked = value; }
     public bool Trouve { get => _trouve; private set => _trouve = value; }
     public GameObject Parent { get => _parent; private set => _parent = value; }
@@ -496,18 +496,21 @@ public class Pathfinding1 : MonoBehaviour
 
     public void NoPathFoundFunction()
     {
-        ManagerUI.SetTexBoxText("Aucun chemin trouvé !");
-        ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
-        ManagerUI.StopTimer();
-        ManagerUI.SetBtnPause(false);
-        ManagerUI.SetBtnInformation(true);
-        ManagerUI.OpenModalInformation();
-        ManagerUI.SetBtnStart(1);
-        ManagerUI.SetDistanceInfoText("");
-        ManagerUI.SetPanelTextInformation("Sorti non trouvé");
-        if (ManagerUI.ModeEnCours == 1)
+        if (ManagerUI.ModeEnCours != 3)
         {
-            StartCoroutine(ManagerUI.FindNearestExitBot());
+            ManagerUI.SetTexBoxText("Aucun chemin trouvé !");
+            ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
+            ManagerUI.StopTimer();
+            ManagerUI.SetBtnPause(false);
+            ManagerUI.SetBtnInformation(true);
+            ManagerUI.OpenModalInformation();
+            ManagerUI.SetBtnStart(1);
+            ManagerUI.SetDistanceInfoText("");
+            ManagerUI.SetPanelTextInformation("Sorti non trouvé");
+            if (ManagerUI.ModeEnCours == 1)
+            {
+                StartCoroutine(ManagerUI.FindNearestExitBot());
+            }
         }
     }
 
@@ -521,7 +524,7 @@ public class Pathfinding1 : MonoBehaviour
             ManagerUI.SetTexBoxText("Le pathFinder a trouvé la sortie !");
             ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);
             ManagerUI.StopTimer();
-            ManagerUI.SetBtnPause(false); 
+            ManagerUI.SetBtnPause(false);
             ManagerUI.SetBtnStart(1);
             ManagerUI.SetBtnInformation(true);
             ManagerUI.OpenModalInformation();
@@ -530,8 +533,18 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
+    public void BlockPathfinderForSave()
+    {
+        Blocked = true;
+    }
+
     public void ChangeSpeed(int speed)
     {
         Speed = speed;
+    }
+
+    public void BlockDuplication()
+    {
+        CanDuplicate = false;
     }
 }

@@ -98,6 +98,7 @@ public class ModalWindowSave : MonoBehaviour
 
         if (nameValide)
         {
+            ManagerMap.SetFolderPath("Maps");
             ManagerMap.AddBlocksToMapData(mapData);
             // Sauvegardez la carte
             ManagerMap.SaveMap(mapName, mapData);

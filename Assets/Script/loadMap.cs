@@ -52,9 +52,6 @@ public class LoadMap : MonoBehaviour
             Debug.LogWarning("Aucun paramètre trouvé !");
         }
 
-
-
-
     }
 
     public void GenerateMapFromSave(List<BlocData> map)

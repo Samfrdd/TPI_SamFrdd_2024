@@ -15,10 +15,15 @@ public class AutomaticManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> _allEntry;
 
+    private List<GameObject> _lstFolderIa = new List<GameObject>();
+
+    private GameObject _currentTraceActive;
+
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
     public RandomGeneration RandomGeneration { get => _randomGeneration; set => _randomGeneration = value; }
     public List<GameObject> AllEntry { get => _allEntry; private set => _allEntry = value; }
     public List<EntryData> LstAllEntryData { get => _lstAllEntryData; set => _lstAllEntryData = value; }
+    public List<GameObject> LstFolderIa { get => _lstFolderIa; set => _lstFolderIa = value; }
 
     public void StartModeAuto()
     {
@@ -63,8 +68,10 @@ public class AutomaticManager : MonoBehaviour
             LstAllEntryData.Add(entryData);
 
             // Save tous les bot de cette entré 
-
+            SaveTrace(i);
+            yield return new WaitForSeconds(1f);
             RandomGeneration.ClearMapBorder();
+
             ManagerUI.ClearAllPathinder();
             ManagerUI.ClearMapInfo();
 
@@ -77,6 +84,60 @@ public class AutomaticManager : MonoBehaviour
 
         Debug.Log("Algo 3 finit ");
         AlgoFinish();
+    }
+
+    public void SaveTrace(int numero)
+    {
+        GameObject saveTrace = new GameObject();
+        saveTrace.name = "Entrée No: " + (numero + 1);
+        LstFolderIa.Add(saveTrace);
+        // foreach (Transform botToTransfer in ManagerUI.IAFolder.transform)
+        // {
+        //     botToTransfer.transform.parent = saveTrace.transform;
+        // }
+        for (var i = ManagerUI.IAFolder.transform.childCount - 1; i >= 0; i--)
+        {
+            ManagerUI.IAFolder.transform.GetChild(i).transform.parent = saveTrace.transform;
+        }
+
+        HideTrace(saveTrace);
+    }
+
+    public void HideTrace(GameObject IAFolder)
+    {
+        foreach (Transform bot in IAFolder.transform)
+        {
+            bot.gameObject.SetActive(false);
+            bot.GetComponent<Pathfinding1>().enabled = false;
+            // bot.gameObject.GetComponent<Pathfinding1>().StopMovement();
+            // bot.gameObject.GetComponent<Pathfinding1>().BlockPathfinderForSave();
+            // bot.gameObject.GetComponent<Pathfinding1>().BlockDuplication();
+        }
+    }
+
+    public void AfficherTrace(string name)
+    {
+        if (_currentTraceActive != null)
+        {
+            ClearCurrentTrace();
+        }
+
+        GameObject IaFolder = GameObject.Find(name);
+        _currentTraceActive = IaFolder;
+        foreach (Transform bot in IaFolder.transform)
+        {
+            bot.gameObject.SetActive(true);
+            bot.gameObject.GetComponent<TrailRenderer>().enabled = true;
+            bot.gameObject.GetComponent<MeshRenderer>().enabled = true;
+        }
+    }
+
+    public void ClearCurrentTrace()
+    {
+        foreach (Transform bot in _currentTraceActive.transform)
+        {
+            bot.gameObject.SetActive(false);
+        }
     }
 
     public void AlgoFinish()
@@ -125,4 +186,13 @@ public class AutomaticManager : MonoBehaviour
         return fitness;
     }
 
+    public void LstFolderIaClear()
+    {
+        for (int i = 0; i < LstFolderIa.Count; i++)
+        {
+            GameObject FolderDestroy = GameObject.Find(LstFolderIa[i].name);
+            DestroyImmediate(FolderDestroy);
+        }
+        LstFolderIa.Clear();
+    }
 }

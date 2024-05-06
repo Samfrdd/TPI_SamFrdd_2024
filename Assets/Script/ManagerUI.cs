@@ -87,17 +87,14 @@ public class ManagerUI : MonoBehaviour
     private Chronometre _chronometre;
     [SerializeField]
     private Material _materialYellow;
-
     [SerializeField]
     private List<GameObject> _lstEntry;
-
+    [SerializeField]
+    private List<GameObject> _lstBtnScrollView;
     private int _nbPathfinder;
-
     [SerializeField]
     private int _modeEnCours;
-
     private bool _algoEnCours;
-
     private int _nbExitFound = 0;
 
 
@@ -139,6 +136,7 @@ public class ManagerUI : MonoBehaviour
     public GameObject LblNbExit { get => _lblNbExit; set => _lblNbExit = value; }
     public GameObject LblFitness { get => _lblFitness; set => _lblFitness = value; }
     public GameObject LblEntryParent { get => _lblEntryParent; set => _lblEntryParent = value; }
+    public List<GameObject> LstBtnScrollView { get => _lstBtnScrollView; set => _lstBtnScrollView = value; }
 
 
 
@@ -154,14 +152,20 @@ public class ManagerUI : MonoBehaviour
         {
             string nameMap = PlayerPrefs.GetString("nameMap"); // Récupérez le paramètre de PlayerPrefs
             Debug.Log("Paramètre récupéré : " + nameMap);
+            gameObject.GetComponent<MapManager>().SetFolderPath(PlayerPrefs.GetString("folder"));
             MapData _mapToLoad = gameObject.GetComponent<MapManager>().LoadMap(nameMap);
             Debug.Log(_mapToLoad);
             gameObject.GetComponent<LoadMap>().GenerateMapFromSave(_mapToLoad.Blocks);
             SetTexBoxText("Map telechargé : " + nameMap);
             PlayerPrefs.DeleteKey("nameMap");
+            PlayerPrefs.DeleteKey("folder");
+            RemoveButtonStart();
+            SetBtnInformation(false);
         }
         else
         {
+            SetBtnInformation(false);
+            SetBtnChoice(false);
             ManagerGeneration.StartGeneation();
         }
     }
@@ -353,6 +357,9 @@ public class ManagerUI : MonoBehaviour
         RemoveButtonStart();
         RemoveButtonGeneration();
         SetBtnInformation(false);
+        SetScrollViewBtnEntry(false);
+        ClearAllInfoModeAuto();
+
         ManagerModal.CloseModal(ModalChoice);
 
         // Mode 1. On place 1 entré et 1 sortie et le bot trouve le plus rapide
@@ -372,6 +379,9 @@ public class ManagerUI : MonoBehaviour
         RemoveButtonStart();
         RemoveButtonGeneration();
         SetBtnInformation(false);
+        SetScrollViewBtnEntry(false);
+        ClearAllInfoModeAuto();
+
         ManagerModal.CloseModal(ModalChoice);
 
         // Mode 2. On place 1 entré et le bot trouve toute les sortie possible
@@ -389,6 +399,8 @@ public class ManagerUI : MonoBehaviour
         RemoveButtonStart();
         RemoveButtonGeneration();
         SetBtnInformation(false);
+        SetScrollViewBtnEntry(false);
+        ClearAllInfoModeAuto();
         ManagerModal.CloseModal(ModalChoice);
         // Mode 3. le bot trouve avec toute les entrés toute les sorties possible
         AutomaticManager.StartModeAuto();
@@ -422,7 +434,7 @@ public class ManagerUI : MonoBehaviour
 
     public void SetNewExit()
     {
-        if (ModeEnCours == 2)
+        if (ModeEnCours == 2 || ModeEnCours == 3)
         {
             Debug.Log("Action non dispobible dans ce mode de jeux");
         }
@@ -433,12 +445,13 @@ public class ManagerUI : MonoBehaviour
             RemoveButtonSave();
             RemoveButtonStart();
             RemoveButtonGeneration();
+            SetScrollViewBtnEntry(false);
             ManagerModal.CloseModal(ModalInformation);
             ClearMapInfo();
             // // Clear tous les bord
             ManagerGeneration.ClearMapBordersWithoutEntry();
             // // Placer bouton 
-            ManagerGeneration.GenerateBtnExit(3);
+            ManagerGeneration.GenerateBtnExit(1);
             // // Tout refermé
         }
 
@@ -528,8 +541,10 @@ public class ManagerUI : MonoBehaviour
             // Instancier le bouton à partir du prefab
             GameObject buttonGO = Instantiate(PrefabBtnScrollView, new Vector3(0, 0, 0), Quaternion.identity, ScrollViewBtnEntryContent.transform);
 
+
             // D�finir le parent du bouton
             buttonGO.transform.SetParent(ScrollViewBtnEntryContent.transform, false); // Ne pas conserver la rotation et l'échelle du parent
+            LstBtnScrollView.Add(buttonGO);
 
             Text buttonText = buttonGO.GetComponentInChildren<Text>();
             if (buttonText != null)
@@ -539,7 +554,7 @@ public class ManagerUI : MonoBehaviour
                 // Ajuster la taille du bouton pour correspondre à la taille du texte
                 RectTransform buttonRect = buttonGO.GetComponent<RectTransform>();
                 buttonRect.sizeDelta = new Vector2(buttonText.preferredWidth + 20, buttonText.preferredHeight + 20);
-                ContentHeight += buttonRect.sizeDelta.y + 5;
+                ContentHeight += buttonRect.sizeDelta.y + 15;
 
             }
             // Acc�der au composant Button du bouton et ajouter une fonction à appeler avec un paramètre
@@ -574,11 +589,31 @@ public class ManagerUI : MonoBehaviour
         LblFitness.GetComponent<Text>().text = "Fitness : " + entryData.EntryFitness.ToString();
 
         // Affiché le bon tracé en vert
+        AutomaticManager.AfficherTrace(entryData.Nom);
     }
 
     public void SetScrollViewBtnEntry(bool value)
     {
         ScrollViewBtnEntry.SetActive(value);
+    }
+
+    public void ClearAllInfoModeAuto()
+    {
+        SetActiveInfoEntryParent(false);
+        SetScrollViewBtnEntry(false);
+        AutomaticManager.LstFolderIaClear();
+        // CLear la list des boutons
+        ClearScrollViewContent();
+    }
+
+    public void ClearScrollViewContent()
+    {
+        foreach (GameObject button in LstBtnScrollView)
+        {
+            Destroy(button.gameObject);
+        }
+
+        LstBtnScrollView.Clear();
     }
 }
 

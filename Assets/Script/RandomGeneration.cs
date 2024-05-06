@@ -1103,6 +1103,7 @@ public class RandomGeneration : MonoBehaviour
         ManagerUI.OpenModalInformation();
         ManagerUI.CloseModalInformation();
         ManagerUI.SetBtnInformation(false);
+        ManagerUI.ClearAllInfoModeAuto();
         StartGeneation();
 
     }

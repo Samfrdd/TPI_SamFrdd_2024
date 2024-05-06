@@ -24,17 +24,34 @@ public class MapManager : MonoBehaviour
     [SerializeField]
     private ModalWindowSave _modalWindow;
 
+    private const string SaveFolderMaps = "/Maps/";
+    private const string SaveFolderTop10 = "/Top10/";
+
+
     public static MapManager instance;
 
     public string SaveFolderPath { get => _saveFolderPath; set => _saveFolderPath = value; }
     public ModalWindowSave ModalWindow { get => _modalWindow; set => _modalWindow = value; }
 
+
+
     private void Awake()
     {
         // Assurez-vous d'appeler get_persistentDataPath dans Awake ou Start
-        SaveFolderPath = Application.persistentDataPath + "/Maps/";
+
     }
 
+    public void SetFolderPath(string folder)
+    {
+        if (folder == "Maps")
+        {
+            SaveFolderPath = Application.persistentDataPath + SaveFolderMaps;
+        }
+        else
+        {
+            SaveFolderPath = Application.persistentDataPath + SaveFolderTop10;
+        }
+    }
     public static MapManager GetInstance()
     {
         if (instance != null)
@@ -52,7 +69,7 @@ public class MapManager : MonoBehaviour
 
         ModalWindow.OpenModal();
 
-        
+
     }
     public void SaveMap(string mapName, MapData mapData)
     {
@@ -89,7 +106,7 @@ public class MapManager : MonoBehaviour
         {
             // Créez un nouvel objet BlockData pour chaque bloc de la scène
             BlocData blockData = new BlocData(blockObject.transform.position, blockObject.transform.rotation, blockObject.name);
-           
+
             // Ajoutez le bloc à la liste de blocs de la carte
             mapData.AddBlockData(blockData);
         }
@@ -108,7 +125,7 @@ public class MapManager : MonoBehaviour
             Debug.LogError("Map file not found: " + filePath);
             return null;
         }
-        
+
         // Désérialiser les données de la carte depuis le fichier XML
         XmlSerializer serializer = new XmlSerializer(typeof(MapData));
         using (StreamReader streamReader = new StreamReader(filePath))
@@ -117,5 +134,5 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    
+
 }

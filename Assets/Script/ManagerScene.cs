@@ -14,9 +14,10 @@ using UnityEngine.SceneManagement;
 
 public class ManagerScene : MonoBehaviour
 {
-    public void LoadScene(string name, string nameMap)
+    public void LoadScene(string name, string nameMap, string folder)
     {
         PlayerPrefs.SetString("nameMap", nameMap); // Stockez le paramètre dans PlayerPrefs
+        PlayerPrefs.SetString("folder", folder); // Stockez le paramètre dans PlayerPrefs
         SceneManager.LoadScene(name);
     }
 
@@ -27,7 +28,7 @@ public class ManagerScene : MonoBehaviour
 
     public void ExitApp()
     {
-         Application.Quit();
+        Application.Quit();
     }
 
 }

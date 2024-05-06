@@ -18,7 +18,7 @@ using Button = UnityEngine.UI.Button;
 using System.IO;
 using UnityEngine.Scripting;
 using Unity.VisualScripting;
-public class LoadListMapSave : MonoBehaviour
+public class LoadListMapTop10 : MonoBehaviour
 {
     private string _folderPath; // Chemin du dossier dont vous voulez récupérer les noms de fichiers
 
@@ -40,7 +40,7 @@ public class LoadListMapSave : MonoBehaviour
 
     void Start()
     {
-        FolderPath = Application.persistentDataPath + "/Maps/";
+        FolderPath = Application.persistentDataPath + "/Top10/";
         FetchFileNames();
         fsWatch.Path = FolderPath;
         fsWatch.IncludeSubdirectories = true;
@@ -94,7 +94,7 @@ public class LoadListMapSave : MonoBehaviour
                 if (button != null)
                 {
                     // Ajouter un écouteur d'évènement au bouton avec une méthode à appeler et un paramètre
-                    button.onClick.AddListener(() => gameObject.GetComponent<ManagerScene>().LoadScene("Main_Simulation", Path.GetFileName(fileName), "Maps"));
+                    button.onClick.AddListener(() => gameObject.GetComponent<ManagerScene>().LoadScene("Main_Simulation", Path.GetFileName(fileName), "Top10"));
                 }
 
                 FileInfo fi = new FileInfo(fileName);
@@ -108,7 +108,6 @@ public class LoadListMapSave : MonoBehaviour
 
             // Appliquer la nouvelle taille
             ParentFolder.GetComponent<RectTransform>().sizeDelta = currentSize;
-
         }
         else
         {
@@ -157,9 +156,6 @@ public class LoadListMapSave : MonoBehaviour
             Destroy(LstMapButton[i].gameObject);
 
         }
-
-
-
         GC.Collect();
     }
 

@@ -16,14 +16,16 @@ using System.Xml.Serialization;
 using UnityEngine;
 
 [Serializable]
-public class MapData 
+public class MapData
 {
+   private float _fitness;
    private List<BlocData> _blocks = new List<BlocData>();
 
-   public List<BlocData> Blocks { get => _blocks;private set => _blocks = value; }
+   public List<BlocData> Blocks { get => _blocks; private set => _blocks = value; }
+   public float Fitness { get => _fitness; set => _fitness = value; }
 
-
-   public void AddBlockData(BlocData bloc){
+   public void AddBlockData(BlocData bloc)
+   {
       Blocks.Add(bloc);
    }
 }
