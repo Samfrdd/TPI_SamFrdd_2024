@@ -153,9 +153,7 @@ public class LoadListMapSave : MonoBehaviour
     {
         for (int i = LstMapButton.Count - 1; i >= 0; i--)
         {
-
             Destroy(LstMapButton[i].gameObject);
-
         }
 
 

@@ -18,6 +18,7 @@ using Button = UnityEngine.UI.Button;
 using System.IO;
 using UnityEngine.Scripting;
 using Unity.VisualScripting;
+
 public class LoadListMapTop10 : MonoBehaviour
 {
     private string _folderPath; // Chemin du dossier dont vous voulez récupérer les noms de fichiers
@@ -60,6 +61,10 @@ public class LoadListMapTop10 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Récupère les noms des fichiers dans un dossier spécifié et génère des boutons pour chaque fichier,
+    /// avec des fonctionnalités pour charger une scène associée au fichier.
+    /// </summary>
     public void FetchFileNames()
     {
         if (Directory.Exists(FolderPath))
@@ -69,6 +74,7 @@ public class LoadListMapTop10 : MonoBehaviour
             Debug.Log("creation");
             ContentHeight = 0;
             LstMapButton = new List<GameObject>();
+            //   var sortedDirectories = fileNames.OrderBy(d => d, new NaturalSortComparer());
 
             foreach (string fileName in fileNames)
             {
@@ -87,7 +93,6 @@ public class LoadListMapTop10 : MonoBehaviour
                     RectTransform buttonRect = buttonGO.GetComponent<RectTransform>();
                     buttonRect.sizeDelta = new Vector2(buttonText.preferredWidth + 20, buttonText.preferredHeight + 20);
                     ContentHeight += buttonRect.sizeDelta.y + 5;
-
                 }
                 // Acc�der au composant Button du bouton et ajouter une fonction à appeler avec un paramètre
                 Button button = buttonGO.GetComponent<Button>();
@@ -115,7 +120,10 @@ public class LoadListMapTop10 : MonoBehaviour
         }
     }
 
-    // Méthode pour supprimer un seul fichier
+    /// <summary>
+    /// Supprime un fichier spécifié s'il existe.
+    /// </summary>
+    /// <param name="filePath">Le chemin du fichier à supprimer.</param>
     public void DeleteFile(string filePath)
     {
         if (File.Exists(filePath))
@@ -129,7 +137,9 @@ public class LoadListMapTop10 : MonoBehaviour
         }
     }
 
-    // Méthode pour supprimer tous les fichiers dans un dossier
+    /// <summary>
+    /// Supprime tous les fichiers présents dans le dossier spécifié, s'il existe.
+    /// </summary>
     public void DeleteAllFilesInFolder()
     {
         if (Directory.Exists(FolderPath))
@@ -148,17 +158,21 @@ public class LoadListMapTop10 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Efface tous les éléments de la liste de boutons associés aux fichiers, et libère la mémoire non utilisée.
+    /// </summary>
     public void ClearList()
     {
         for (int i = LstMapButton.Count - 1; i >= 0; i--)
         {
-
             Destroy(LstMapButton[i].gameObject);
-
         }
-        GC.Collect();
+        GC.Collect(); // Garbage collector : Libére la mémoire des objets qui ont été déruit
     }
 
+    /// <summary>
+    /// Rafraîchit la liste des fichiers en effaçant tous les éléments existants et en rechargeant la liste.
+    /// </summary>
     public void RefreshList()
     {
         Debug.Log("Refresh list");
@@ -166,33 +180,47 @@ public class LoadListMapTop10 : MonoBehaviour
         FetchFileNames();
     }
 
-
+    /// <summary>
+    /// Gère l'événement de renommage d'un fichier surveillé par FileSystemWatcher.
+    /// </summary>
+    /// <param name="sender">L'objet à l'origine de l'événement.</param>
+    /// <param name="e">Les données de l'événement RenamedEventArgs.</param>
     private void FsWatch_Renamed(object sender, RenamedEventArgs e)
     {
-
         Debug.Log($"Fichier {e.OldName} renommé {e.Name}");
         Refresh = true;
-
-
     }
 
+    /// <summary>
+    /// Gère l'événement de suppression d'un fichier surveillé par FileSystemWatcher.
+    /// </summary>
+    /// <param name="sender">L'objet à l'origine de l'événement.</param>
+    /// <param name="e">Les données de l'événement FileSystemEventArgs.</param>
     private void FsWatch_Deleted(object sender, FileSystemEventArgs e)
     {
         Debug.Log($"Fichier {e.Name} supprimé");
         Refresh = true;
-
     }
 
+    /// <summary>
+    /// Gère l'événement de création d'un fichier surveillé par FileSystemWatcher.
+    /// </summary>
+    /// <param name="sender">L'objet à l'origine de l'événement.</param>
+    /// <param name="e">Les données de l'événement FileSystemEventArgs.</param>
     private void FsWatch_Created(object sender, FileSystemEventArgs e)
     {
         Debug.Log($"Fichier {e.Name} créé");
         Refresh = true;
     }
 
+    /// <summary>
+    /// Gère l'événement de modification d'un fichier surveillé par FileSystemWatcher.
+    /// </summary>
+    /// <param name="sender">L'objet à l'origine de l'événement.</param>
+    /// <param name="e">Les données de l'événement FileSystemEventArgs.</param>
     private void FsWatch_Changed(object sender, FileSystemEventArgs e)
     {
         Debug.Log($"Fichier {e.Name} modifié ");
         Refresh = true;
-
     }
 }

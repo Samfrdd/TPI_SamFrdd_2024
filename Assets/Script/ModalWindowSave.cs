@@ -26,18 +26,17 @@ using Unity.VisualScripting;
 public class ModalWindowSave : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _modalWindow;
+    private GameObject _modalWindow; // Fenêtre modal
     [SerializeField]
-    private GameObject _inputField;
+    private GameObject _inputField; // Input textuel
     [SerializeField]
-    private GameObject _modalWindowChoice;
+    private GameObject _modalWindowChoice; // Bouton pour afficher les choix
     [SerializeField]
-    private GameObject _lblErreur;
+    private GameObject _lblErreur; // lbl erreur si le nom existe deja
     [SerializeField]
-    private ManagerUI _managerUI;
-
+    private ManagerUI _managerUI; // class managerUI
     [SerializeField]
-    private MapManager _managerMap;
+    private MapManager _managerMap; // class MapManager
 
     public GameObject ModalWindow { get => _modalWindow; set => _modalWindow = value; }
     public GameObject InputField { get => _inputField; set => _inputField = value; }
@@ -46,6 +45,9 @@ public class ModalWindowSave : MonoBehaviour
     public MapManager ManagerMap { get => _managerMap; set => _managerMap = value; }
     public GameObject ModalWindowChoice { get => _modalWindowChoice; set => _modalWindowChoice = value; }
 
+    /// <summary>
+    /// Ouvre la fenêtre modale.
+    /// </summary>
     public void OpenModal()
     {
         if (ModalWindowChoice.activeSelf)
@@ -54,24 +56,27 @@ public class ModalWindowSave : MonoBehaviour
         }
         ModalWindow.SetActive(true);
         LblErreur.SetActive(false);
-
     }
 
+    /// <summary>
+    /// Ferme la fenêtre modale.
+    /// </summary>
     public void CloseModal()
     {
         ModalWindow.SetActive(false);
     }
 
+    /// <summary>
+    /// Valide l'entrée de l'utilisateur pour créer ou enregistrer une carte.
+    /// </summary>
     public void ValidateInput()
     {
         string userInput = this.InputField.GetComponent<InputField>().text;
         Debug.Log("Input validé : " + userInput);
-        // Ici, vous pouvez traiter ou utiliser la valeur entrée par l'utilisateur
         string folderPath = Application.persistentDataPath + "/Maps/"; ;
         string mapName;
         MapData mapData = new MapData();
         bool nameValide = true;
-        // Ajoutez tous les blocs de la scène à la liste de blocs
 
         if (userInput == "")
         {
@@ -81,7 +86,6 @@ public class ModalWindowSave : MonoBehaviour
         {
             mapName = userInput;
         }
-
 
         if (Directory.Exists(folderPath))
         {
@@ -101,7 +105,7 @@ public class ModalWindowSave : MonoBehaviour
             ManagerMap.SetFolderPath("Maps");
             ManagerMap.AddBlocksToMapData(mapData);
             // Sauvegardez la carte
-            ManagerMap.SaveMap(mapName, mapData);
+            ManagerMap.SaveMap(mapName, mapData, folderPath);
 
             StartCoroutine(ManagerUI.MapSavedConfirmed());
 
@@ -114,6 +118,9 @@ public class ModalWindowSave : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Annule l'entrée de l'utilisateur et ferme la fenêtre modale.
+    /// </summary>
     public void CancelInput()
     {
         Debug.Log("Input annulé.");

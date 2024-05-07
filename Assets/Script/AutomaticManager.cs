@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
+using UnityEngine.UI;
+using Button = UnityEngine.UI.Button;
+using System.IO;
+using Unity.VisualScripting;
 
 public class AutomaticManager : MonoBehaviour
 {
@@ -10,6 +15,9 @@ public class AutomaticManager : MonoBehaviour
     private ManagerUI _managerUI;
     [SerializeField]
     private RandomGeneration _randomGeneration;
+
+    [SerializeField]
+    private MapManager _mapManager;
     [SerializeField]
     private List<EntryData> _lstAllEntryData = new List<EntryData>();
     [SerializeField]
@@ -24,6 +32,7 @@ public class AutomaticManager : MonoBehaviour
     public List<GameObject> AllEntry { get => _allEntry; private set => _allEntry = value; }
     public List<EntryData> LstAllEntryData { get => _lstAllEntryData; set => _lstAllEntryData = value; }
     public List<GameObject> LstFolderIa { get => _lstFolderIa; set => _lstFolderIa = value; }
+    public MapManager MapManager { get => _mapManager; set => _mapManager = value; }
 
     public void StartModeAuto()
     {
@@ -155,9 +164,114 @@ public class AutomaticManager : MonoBehaviour
         string text = "Nombre de sorti trouvé total: " + GetAllExitFound().ToString();
         ManagerUI.SetPanelTextInformation(text);
         ManagerUI.SetDistanceInfoText("Score total du labyrinthe : " + CalculerFitnessCarte());
+
+        // Récuperer les 10 meileurs carte
+        // Regardeer si la notre est dans le top 10
+        // si top 10 = save notre carte et jeter l'ancienne 10ème
+        CheckFitnessTop10(CalculerFitnessCarte());
     }
 
+    public void CheckFitnessTop10(float fitness)
+    {
+        List<MapData> listMaze = new List<MapData>();
+        listMaze = GetAllTop10Maze();
+        MapData mapData = new MapData();
+        if (listMaze.Count < 10)
+        {
+            MapManager.AddBlocksToMapData(mapData);
+            mapData.SetFitness(CalculerFitnessCarte());
+            // Si la liste est moins de 10, simplement ajouter le nouveau labyrinthe
+            listMaze.Add(mapData);
+            SortAndSave(listMaze);
+            return;
+        }
 
+        // Comparer la fitness du nouveau labyrinthe avec les labyrinthes actuels
+        foreach (var labyrinthe in listMaze)
+        {
+            MapManager.AddBlocksToMapData(mapData);
+            mapData.SetFitness(CalculerFitnessCarte());
+            if (mapData.Fitness > labyrinthe.Fitness)
+            {
+
+                // Remplacer le labyrinthe actuel par le nouveau labyrinthe
+                listMaze.Remove(labyrinthe);
+                listMaze.Add(mapData);
+                SortAndSave(listMaze);
+                return;
+            }
+        }
+    }
+
+    private void SortAndSave(List<MapData> lstMazeToSave)
+    {
+        DeleteAllFilesInFolder();
+        lstMazeToSave.Sort((x, y) => y.Fitness.CompareTo(x.Fitness));
+        // Code pour sauvegarder la liste des 10 meilleurs labyrinthes
+        int i = 0;
+        Debug.Log("COUNT " + lstMazeToSave.Count);
+        foreach (var maze in lstMazeToSave)
+        {
+
+            SaveMap("Top " + (i + 1) + " : " + maze.Fitness, maze);
+            i++;
+        }
+    }
+
+    /// <summary>
+    /// Supprime tous les fichiers présents dans le dossier spécifié, s'il existe.
+    /// </summary>
+    public void DeleteAllFilesInFolder()
+    {
+        if (Directory.Exists(Application.persistentDataPath + "/Top10/"))
+        {
+            string[] files = Directory.GetFiles(Application.persistentDataPath + "/Top10/");
+            foreach (string file in files)
+            {
+                File.Delete(file);
+                Debug.Log("Fichier supprimé : " + file);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Le dossier n'existe pas : " + Application.persistentDataPath + "/Top10/");
+        }
+    }
+    public void AjouterLabyrinthe(float nouveauLabyrinthe)
+    {
+
+    }
+
+    public void SaveMap(string name, MapData mapData)
+    {
+        string folderPath = Application.persistentDataPath + "/Top10/";
+        MapManager.SetFolderPath("Top10");
+        MapManager.SaveMap(name, mapData, folderPath);
+    }
+
+    public List<MapData> GetAllTop10Maze()
+    {
+        List<MapData> listMaze = new List<MapData>();
+        string folderPath = Application.persistentDataPath + "/Top10/";
+        if (Directory.Exists(folderPath))
+        {
+            string[] fileNames = Directory.GetFiles(folderPath);
+
+            Debug.Log("get");
+            foreach (string fileName in fileNames)
+            {
+                // Récuper la fitness des carte
+                MapData _mapToLoad = gameObject.GetComponent<MapManager>().LoadMap(Path.GetFileName(fileName), folderPath);
+                listMaze.Add(_mapToLoad);
+            }
+        }
+        else
+        {
+            Debug.LogError("Le dossier spécifié n'existe pas : " + folderPath);
+        }
+
+        return listMaze;
+    }
     public float GetAllExitFound()
     {
         float allExit = 0;

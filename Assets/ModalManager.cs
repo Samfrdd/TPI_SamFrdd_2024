@@ -1,3 +1,11 @@
+/** 
+***********************************************************************
+Auteur : Sam Freddi
+Date : 17.04.2024
+Description : ModalManager.cs est une classe qui me permets de gérer l'ouverture des fenêtres modale
+version 1.0
+***********************************************************************
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +33,10 @@ public class ModalManager : MonoBehaviour
     public GameObject ModalWindowInformation { get => _modalWindowInformation; set => _modalWindowInformation = value; }
     public GameObject ModalWindowChoice { get => _modalWindowChoice; set => _modalWindowChoice = value; }
 
+    /// <summary>
+    /// Ouvre une fenêtre modale spécifiée, en fermant préalablement toute autre fenêtre modale ouverte.
+    /// </summary>
+    /// <param name="modal">Le GameObject de la fenêtre modale à ouvrir.</param>
     public void OpenModal(GameObject modal)
     {
         if (ModalWindowSave.activeSelf)
@@ -42,6 +54,10 @@ public class ModalManager : MonoBehaviour
         modal.SetActive(true);
     }
 
+    /// <summary>
+    /// Ferme une fenêtre modale spécifiée en désactivant son GameObject.
+    /// </summary>
+    /// <param name="modal">Le GameObject de la fenêtre modale à fermer.</param>
     public void CloseModal(GameObject modal)
     {
         modal.SetActive(false);

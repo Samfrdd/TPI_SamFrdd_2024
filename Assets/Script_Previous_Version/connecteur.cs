@@ -1,3 +1,11 @@
+/** 
+***********************************************************************
+Auteur : Sam Freddi
+Date : 17.04.2024
+Description : connecteur.cs est une classe qui se place sur les blocs de connexion entre chaque blocs
+version 1.0
+***********************************************************************
+*/
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +36,11 @@ public class connecteur : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Déclenché lorsque ce collider entre en collision avec un autre collider.
+    /// Gère les interactions entre cet objet et les autres objets lors de la collision.
+    /// </summary>
+    /// <param name="other">Le collider avec lequel cet objet entre en collision.</param>
     private void OnTriggerEnter(Collider other)
     {
 
@@ -40,7 +53,7 @@ public class connecteur : MonoBehaviour
             else if (other.gameObject.CompareTag("mauvais"))
             {
                 _connected = "connecte";
-                 _blockConnecte = other.gameObject;
+                _blockConnecte = other.gameObject;
             }
         }
         else

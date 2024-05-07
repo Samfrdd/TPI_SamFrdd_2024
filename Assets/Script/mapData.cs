@@ -28,6 +28,11 @@ public class MapData
    {
       Blocks.Add(bloc);
    }
+
+   public void SetFitness(float fitness)
+   {
+      Fitness = fitness;
+   }
 }
 
 

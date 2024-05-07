@@ -1,4 +1,4 @@
- /** 
+/** 
 ***********************************************************************
 Auteur : Sam Freddi
 Date : 26.03.2024
@@ -29,10 +29,10 @@ public class LoadMap : MonoBehaviour
     [SerializeField]
     private Transform _folderBlocParent;
 
-    public MapManager MapManager { get => _mapManager;private set => _mapManager = value; }
-    public ManagerUI ManagerUI { get => _managerUI;private set => _managerUI = value; }
-    public List<GameObject> LstBlockMaze { get => _lstBlockMaze;private set => _lstBlockMaze = value; }
-    public Transform FolderBlocParent { get => _folderBlocParent;private set => _folderBlocParent = value; }
+    public MapManager MapManager { get => _mapManager; private set => _mapManager = value; }
+    public ManagerUI ManagerUI { get => _managerUI; private set => _managerUI = value; }
+    public List<GameObject> LstBlockMaze { get => _lstBlockMaze; private set => _lstBlockMaze = value; }
+    public Transform FolderBlocParent { get => _folderBlocParent; private set => _folderBlocParent = value; }
 
 
     //manager.instance.LoadMap("Map_20240213144955.xml");
@@ -44,7 +44,7 @@ public class LoadMap : MonoBehaviour
 
         if (PlayerPrefs.HasKey("nameMap"))
         {
-          
+
             // Faites ce que vous devez faire avec le paramètre
         }
         else
@@ -54,6 +54,10 @@ public class LoadMap : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Génère une carte à partir des données enregistrées.
+    /// </summary>
+    /// <param name="map">La liste des données de blocs de la carte à générer.</param>
     public void GenerateMapFromSave(List<BlocData> map)
     {
         foreach (BlocData blockData in map)
@@ -62,17 +66,12 @@ public class LoadMap : MonoBehaviour
             string fullString = blockData.Type;
             string[] parts = fullString.Split('('); // Diviser la chaîne en fonction de '('
             string extractedString = parts[0]; // Prendre la première partie
-
-
-
             desiredElement = LstBlockMaze.Find(item => item.name == extractedString);
             // Debug.Log(extractedString);
 
             GameObject block = Instantiate(desiredElement, blockData.Position, blockData.Rotation);
-
             block.transform.parent = FolderBlocParent;
         }
-
         ManagerUI.SetBtnChoice(true);
     }
 }

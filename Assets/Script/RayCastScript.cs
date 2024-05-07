@@ -34,31 +34,21 @@ public class RayCastScript : MonoBehaviour
     // See Order of Execution for Event Functions for information on FixedUpdate() and Update() related to physics queries
     void FixedUpdate()
     {
-        // Bit shift the index of the layer (8) to get a bit mask
-
-
-        // This would cast rays only against colliders in layer 8.
-        // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
-
-
         RaycastHit hit;
-        // Does the ray intersect any objects excluding the player layer
+
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 4f, LayerMask))
         {
             if (Color == 1)
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, UnityEngine.Color.yellow);
-
             }
             else if (Color == 2)
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, UnityEngine.Color.blue);
-
             }
             else
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, UnityEngine.Color.green);
-
             }
 
             if (ValeurBit == 1)
@@ -73,15 +63,11 @@ public class RayCastScript : MonoBehaviour
             {
                 Distance = 4;
             }
-
         }
         else
         {
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 3, UnityEngine.Color.red);
-
-
             Distance = 0;
-
         }
     }
 }

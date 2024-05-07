@@ -133,6 +133,11 @@ public class Pathfinding1 : MonoBehaviour
         ManagerUI = GameObject.FindWithTag("gameManager").gameObject.GetComponent<ManagerUI>();
     }
 
+    /// <summary>
+    /// Méthode appelée lorsque le collider attaché à cet objet entre en collision avec une autre zone de déclenchement de collider.
+    /// Elle vérifie les balises de l'objet en collision et effectue des actions appropriées.
+    /// </summary>
+    /// <param name="other">Le collider de l'autre objet impliqué dans l'événement de déclenchement.</param>
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Bloc")
@@ -148,6 +153,11 @@ public class Pathfinding1 : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Méthode appelée à chaque frame pour mettre à jour le comportement de l'objet.
+    /// Elle vérifie si la fin est atteinte, récupère les distances des capteurs de mouvement, et effectue les calculs nécessaires.
+    /// Elle met à jour les variables Forward, Left et Right avec les distances des capteurs.
+    /// </summary>
     void Update()
     {
         CheckIfFinish();
@@ -185,11 +195,19 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Calcule l'état actuel de l'objet en combinant les distances des capteurs frontal, gauche et droit.
+    /// </summary>
     public void CalculterState()
     {
         State = Forward + Left + Right;
     }
 
+    /// <summary>
+    /// Calcule la distance parcourue pendant la frame actuelle en comparant la position actuelle de l'objet avec sa dernière position.
+    /// Met à jour la distance totale parcourue et la distance réelle parcourue.
+    /// Met également à jour la position précédente pour la prochaine frame.
+    /// </summary>
     public void CalculateDistance()
     {
         float distanceFrame = Vector3.Distance(transform.position, LastPosition);
@@ -200,6 +218,12 @@ public class Pathfinding1 : MonoBehaviour
         // Mettre à jour la position précédente pour la prochaine frame
         LastPosition = transform.position;
     }
+
+    /// <summary>
+    /// Vérifie si les conditions de fin de jeu sont remplies.
+    /// Si l'objet est l'original et est bloqué et qu'aucun chemin n'a été trouvé, déclenche le blocage du pathfinder.
+    /// Si l'objet est l'original, a trouvé la sortie et que l'algorithme est terminé, déclenche la fin du jeu.
+    /// </summary>
     public void CheckIfFinish()
     {
         if (IsOriginal && _blocked && !NoPathFound)
@@ -216,6 +240,9 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Déplace l'objet en fonction de son état et des conditions environnementales.
+    /// </summary>
     public void Move()
     {
         if (!Blocked) // Si on a pas atteint un sens unique
@@ -327,12 +354,19 @@ public class Pathfinding1 : MonoBehaviour
         transform.Translate(movement);
     }
 
+    /// <summary>
+    /// Arrête le mouvement de l'objet en mettant sa vitesse actuelle à zéro et en désactivant son indication de mouvement.
+    /// </summary>
     public void StopMovement()
     {
         CurrentSpeed = 0f;
         IsMoving = false;
     }
 
+    /// <summary>
+    /// Vérifie si l'objet est le premier pathfinder à passer par le bloc actuel.
+    /// </summary>
+    /// <returns>Retourne vrai si l'objet est le premier pathfinder à passer par le bloc, sinon retourne faux.</returns>
     public bool CheckIfFirstPathfinder()
     {
         if (CurrentBloc.GetComponent<CheckAlreadyPass>().Pathfinder == this.gameObject)
@@ -345,6 +379,10 @@ public class Pathfinding1 : MonoBehaviour
             return false;
         }
     }
+
+    /// <summary>
+    /// Duplique l'objet pathfinder dans la direction avant s'il n'y a pas d'obstacle devant.
+    /// </summary>
     public void DuplicationForward()
     {
         CalculterState();
@@ -360,7 +398,6 @@ public class Pathfinding1 : MonoBehaviour
             pathfinderClone.GetComponent<Pathfinding1>().BLockChangeState();
             pathfinderClone.GetComponent<Pathfinding1>().SetState(6);
             pathfinderClone.GetComponent<Pathfinding1>().SetOriginal(false);
-
             pathfinderClone.GetComponent<Pathfinding1>().SetParent(this.gameObject);
             pathfinderClone.GetComponent<Pathfinding1>().ClearListChildren();
             pathfinderClone.GetComponent<Pathfinding1>().SetFolderParent(pathfinderClone);
@@ -368,6 +405,9 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Duplique l'objet pathfinder dans la direction droite.
+    /// </summary>
     public void DuplicationRight()
     {
         HasDuplicate = true;
@@ -382,17 +422,17 @@ public class Pathfinding1 : MonoBehaviour
         pathfinderClone.GetComponent<Pathfinding1>().SetFolderParent(pathfinderClone);
         this.gameObject.GetComponent<Pathfinding1>().AddChildren(pathfinderClone);
         pathfinderClone.GetComponent<Pathfinding1>().SetOriginal(false);
-
         pathfinderClone.transform.Rotate(Vector3.up, 90f);
-
     }
 
+    /// <summary>
+    /// Duplique l'objet pathfinder dans la direction gauche.
+    /// </summary>
     public void DuplicateLeft()
     {
         HasDuplicate = true;
 
         Vector3 newPos = transform.position;
-
 
         GameObject pathfinderClone = Instantiate(PrefabPathfinder, newPos, transform.rotation);
         pathfinderClone.GetComponent<Pathfinding1>().BLockChangeState();
@@ -401,18 +441,24 @@ public class Pathfinding1 : MonoBehaviour
         pathfinderClone.GetComponent<Pathfinding1>().ClearListChildren();
         pathfinderClone.GetComponent<Pathfinding1>().SetFolderParent(pathfinderClone);
         pathfinderClone.GetComponent<Pathfinding1>().SetOriginal(false);
-
         this.gameObject.GetComponent<Pathfinding1>().AddChildren(pathfinderClone);
-
         pathfinderClone.transform.Rotate(Vector3.up, -90f);
-
     }
 
+    /// <summary>
+    /// Définit le parent de l'objet.
+    /// </summary>
+    /// <param name="parent">Le GameObject qui deviendra le parent de cet objet.</param>
     public void SetParent(GameObject parent)
     {
         this.Parent = parent;
     }
 
+    /// <summary>
+    /// Coroutine qui bloque le pathfinder en activant son rendu de traînée, en changeant son matériau, en désactivant son rendu de maillage, et en notifiant le parent si ce n'est pas l'original.
+    /// Attend ensuite pendant une courte durée avant de désactiver le rendu de traînée.
+    /// </summary>
+    /// <returns>Retourne une coroutine.</returns>
     IEnumerator BlockPathfinder()
     {
         gameObject.GetComponent<TrailRenderer>().enabled = true;
@@ -430,11 +476,12 @@ public class Pathfinding1 : MonoBehaviour
         if (gameObject.GetComponent<TrailRenderer>().material != AllMaterial[3])
         {
             gameObject.GetComponent<TrailRenderer>().enabled = false;
-
         }
-
     }
 
+    /// <summary>
+    /// Marque le pathfinder comme ayant trouvé la sortie, change son matériau de traînée et notifie le parent, s'il existe, qu'il a trouvé la sortie.
+    /// </summary>
     public void FindExit()
     {
         Trouve = true;
@@ -442,25 +489,39 @@ public class Pathfinding1 : MonoBehaviour
         if (Parent != null)
         {
             Parent.GetComponent<Pathfinding1>().FindExit();
-
         }
     }
 
+    /// <summary>
+    /// Ajoute un enfant à la liste des enfants de l'objet.
+    /// </summary>
+    /// <param name="child">Le GameObject qui deviendra un enfant de cet objet.</param>
     public void AddChildren(GameObject child)
     {
         AllChildren.Add(child);
     }
 
+    /// <summary>
+    /// Efface tous les éléments de la liste des enfants.
+    /// </summary>
     public void ClearListChildren()
     {
         AllChildren.Clear();
     }
 
+    /// <summary>
+    /// Définit le parent d'un objet pour le regrouper sous un dossier spécifique.
+    /// </summary>
+    /// <param name="pathfinder">L'objet à déplacer sous le dossier.</param>
     public void SetFolderParent(GameObject pathfinder)
     {
         pathfinder.transform.parent = DossierIA.transform;
     }
 
+    /// <summary>
+    /// Vérifie si tous les enfants sont bloqués.
+    /// Si oui, lance une coroutine pour bloquer le chemin du pathfinder.
+    /// </summary>
     public void CheckIfAllChildrenBlocked()
     {
         bool oneIsBloked = true;
@@ -479,21 +540,35 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Définit si cet élément est original ou non.
+    /// </summary>
+    /// <param name="info">La valeur booléenne qui indique si cet élément est original.</param>
     public void SetOriginal(bool info)
     {
         IsOriginal = info;
     }
 
+    /// <summary>
+    /// Bloque le changement d'état.
+    /// </summary>
     public void BLockChangeState()
     {
         BlockChangeState = true;
     }
 
+    /// <summary>
+    /// Définit l'état actuel de l'objet.
+    /// </summary>
+    /// <param name="state">La nouvelle valeur d'état à définir.</param>
     public void SetState(int state)
     {
         State = state;
     }
 
+    /// <summary>
+    /// Fonction appelée lorsqu'aucun chemin n'est trouvé.
+    /// </summary>
     public void NoPathFoundFunction()
     {
         if (ManagerUI.ModeEnCours != 3)
@@ -514,7 +589,9 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Fonction appelée lorsque la sortie est trouvée par le pathfinder.
+    /// </summary>
     public void ExitFound()
     {
         if (ManagerUI.ModeEnCours == 1)
@@ -533,16 +610,26 @@ public class Pathfinding1 : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Bloque le pathfinder pour enregistrer son état.
+    /// </summary>
     public void BlockPathfinderForSave()
     {
         Blocked = true;
     }
 
+    /// <summary>
+    /// Modifie la vitesse du pathfinder.
+    /// </summary>
+    /// <param name="speed">La nouvelle vitesse du pathfinder.</param>
     public void ChangeSpeed(int speed)
     {
         Speed = speed;
     }
 
+    /// <summary>
+    /// Empêche la duplication du pathfinder.
+    /// </summary>
     public void BlockDuplication()
     {
         CanDuplicate = false;

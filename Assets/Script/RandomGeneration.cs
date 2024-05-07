@@ -38,11 +38,11 @@ public class RandomGeneration : MonoBehaviour
     #region dossierParent
 
     [SerializeField]
-    private Transform _folderBlocParent;
+    private Transform _folderBlocParent; // Dossier dans la scene avec tous les blocs du labyrinthe
     [SerializeField]
-    private Transform _folderIaParent;
+    private Transform _folderIaParent; // Dossier dans la scene avec tous les bots 
     [SerializeField]
-    private Canvas _canvas;
+    private Canvas _canvas;// GameObject canvas qui est dans la scene
 
     #endregion
 
@@ -88,9 +88,11 @@ public class RandomGeneration : MonoBehaviour
     private GameObject _btnPrefab; // prefab du button
 
     [SerializeField]
-    private ManagerUI _managerUI;
+    private ManagerUI _managerUI; // Class managerUI
     #endregion
 
+
+    // Propriété
     public bool MapCree { get => _mapCree; private set => _mapCree = value; }
     public List<GameObject> LstEntre { get => _lstEntre; set => _lstEntre = value; }
     public bool Pause { get => _pause; set => _pause = value; }
@@ -121,10 +123,18 @@ public class RandomGeneration : MonoBehaviour
         FolderIaParent = GameObject.FindWithTag("IA").transform;
     }
 
+    /// <summary>
+    /// Démarre le processus de génération de la carte en lançant une coroutine.
+    /// </summary>
     public void StartGeneation()
     {
         StartCoroutine(GenerationMap());
     }
+
+    /// <summary>
+    /// Coroutine qui génère la carte en plaçant les blocs dans la scène en fonction des paramètres spécifiés.
+    /// </summary>
+    /// <returns>Coroutine de génération de la carte.</returns>
     IEnumerator GenerationMap()
     {
         ManagerUI.BtnStart.gameObject.SetActive(false);
@@ -146,12 +156,11 @@ public class RandomGeneration : MonoBehaviour
         GameObject previousBlock = null;
         int nbTentative = 0;
 
+        // Comment
         for (int row = 0; row < Rows; row++)
         {
             for (int col = 0; col < Columns; col++)
             {
-
-
                 bool blockGood = false;
                 while (!blockGood)
                 {
@@ -257,7 +266,9 @@ public class RandomGeneration : MonoBehaviour
 
     }
 
-    // Fonctions qui ajoute tous les blocs de la map dans la liste AllBlock
+    /// <summary>
+    /// Ajoute tous les blocs enfants du parent spécifié à la liste AllBlock.
+    /// </summary>
     public void AddAllBlocFromMaze()
     {
         AllBlock.Clear();
@@ -269,7 +280,9 @@ public class RandomGeneration : MonoBehaviour
         }
     }
 
-    // Fonctions qui permets de détruire tous les gameObject vide
+    /// <summary>
+    /// Détruit tous les GameObjects vides de la scène.
+    /// </summary>
     public void DestroyAllGameObjectEmpty()
     {
         // Détruire tous les gameObject vide de la scene 
@@ -283,7 +296,9 @@ public class RandomGeneration : MonoBehaviour
         }
     }
 
-    // Fonctions qui nous pemets de récuéperer toute les entrés 
+    /// <summary>
+    /// Obtient tous les connecteurs et blocs non connectés de la liste des blocs.
+    /// </summary>
     public void GetAllBlocNotConnected()
     {
         LstEntre.Clear();
@@ -315,7 +330,11 @@ public class RandomGeneration : MonoBehaviour
 
 
 
-    // Fonctions qui test si les blocs sont connecté
+    /// <summary>
+    /// Vérifie s'il y a une mauvaise connexion parmi les connecteurs donnés.
+    /// </summary>
+    /// <param name="listString">La liste des états de connexion des connecteurs.</param>
+    /// <returns>True si tous les connecteurs ont une connexion valide, sinon False.</returns>
     private bool TestIfBadConnection(List<string> listString)
     {
         bool ConnecteurAllFalse;
@@ -326,18 +345,19 @@ public class RandomGeneration : MonoBehaviour
         }
         else
         {
-
             ConnecteurAllFalse = true;
         }
 
         return ConnecteurAllFalse;
     }
 
-    // Fonctions qui génère tous les boutons pour placer une entre
+    /// <summary>
+    /// Génère des boutons d'entrée dynamiquement pour chaque connecteur non connecté et les affiche à l'écran.
+    /// </summary>
+    /// <param name="mode">Le mode de génération des boutons (par exemple, pour l'ajout d'entrées ou de sorties).</param>
     public void generateBtnEnter(int mode)
     {
         ManagerUI.SetTexBoxText("Veuillez sélectionner une entré !");
-
 
         int index = 0;
 
@@ -374,7 +394,10 @@ public class RandomGeneration : MonoBehaviour
     }
 
 
-    // Fonctions qui génère tous les boutons pour placer une sortie
+    /// <summary>
+    /// Génère des boutons de sortie dynamiquement pour chaque connecteur non connecté (sauf celui déjà choisi comme entrée) et les affiche à l'écran.
+    /// </summary>
+    /// <param name="mode">Le mode de génération des boutons (par exemple, pour l'ajout d'entrées ou de sorties).</param>
     public void GenerateBtnExit(int mode)
     {
         ManagerUI.SetTexBoxText("Veuillez sélectionner une sortie !");
@@ -417,7 +440,12 @@ public class RandomGeneration : MonoBehaviour
     }
 
 
-    //Fonctions qui ajoute l'entré a la carte
+
+    /// <summary>
+    ///Fonctions qui ajoute l'entré a la carte
+    /// </summary>
+    /// <param name="entre">Lentré qui a été choisi .</param>
+    /// <param name="mode">Le mode de génération des boutons (par exemple, pour l'ajout d'entrées ou de sorties).</param>
     public void AjouterEntre(Transform entre, int mode)
     {
         GameObject block;
@@ -621,7 +649,12 @@ public class RandomGeneration : MonoBehaviour
 
     }
 
-    //Foncions qui ajoute la sortie
+
+    /// <summary>
+    ///Foncions qui ajoute la sortie
+    /// </summary>
+    /// <param name="entre">Lentré qui a été choisi .</param>
+    /// <param name="mode">Le mode de génération des boutons (par exemple, pour l'ajout d'entrées ou de sorties).</param>
     public void AjouterExit(Transform exit, int mode = 2)
     {
         GameObject block;
@@ -838,7 +871,11 @@ public class RandomGeneration : MonoBehaviour
 
     }
 
-    // Fonctions qui ajoute les blocs pour fermé la map
+    /// <summary>
+    /// Fonctions qui ajoute les blocs pour fermé la map
+    /// </summary>
+    /// <param name="entre">Lentré qui a été choisi .</param>
+    /// <param name="prefab">Le prefab a ajouté</param>
     public void AjouterBlocFermeture(Transform blocNotConnected, GameObject prefab)
     {
         GameObject block;
@@ -1029,6 +1066,11 @@ public class RandomGeneration : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Coroutine pour compléter la génération de la carte en ajoutant des blocs de fermeture ou des sorties selon le mode spécifié.
+    /// </summary>
+    /// <param name="mode">Le mode de complétion de la carte (par défaut, 1 pour les blocs de fermeture).</param>
+    /// <returns>Un objet IEnumerator pour être utilisé comme coroutine.</returns>
     IEnumerator CompleteMap(int mode = 1)
     {
         ManagerUI.SetTexBoxText("Génération terminer ! ");
@@ -1078,7 +1120,9 @@ public class RandomGeneration : MonoBehaviour
 
 
 
-    //Fonctions qui efface la carte de la scene
+    /// <summary>
+    /// Efface tous les blocs de la carte ainsi que les éléments de l'IA.
+    /// </summary>
     public void ClearMap()
     {
         foreach (Transform child in FolderBlocParent)
@@ -1093,10 +1137,11 @@ public class RandomGeneration : MonoBehaviour
     }
 
 
-    // Fonctions qui appele toute les fonctions pour régénerer une carte
+    /// <summary>
+    /// Redémarre le processus de génération de la carte en supprimant les éléments générés précédemment et en lançant une nouvelle génération.
+    /// </summary>
     public void RestartGeneration()
     {
-
         RemoveButton();
         ClearMap();
         ManagerUI.ClearInfo();
@@ -1105,10 +1150,11 @@ public class RandomGeneration : MonoBehaviour
         ManagerUI.SetBtnInformation(false);
         ManagerUI.ClearAllInfoModeAuto();
         StartGeneation();
-
     }
 
-    // Fonctions qui remove les buttons
+    /// <summary>
+    /// Supprime tous les boutons de la scène qui ont le tag "btn".
+    /// </summary>
     public void RemoveButton()
     {
         List<GameObject> objectsWithTag = new List<GameObject>();
@@ -1127,6 +1173,9 @@ public class RandomGeneration : MonoBehaviour
         objectsWithTag.Clear();
     }
 
+    /// <summary>
+    /// Efface les bordures de la carte en conservant uniquement le bloc d'entrée et en réinitialisant les connexions des autres blocs à "pasConnecte".
+    /// </summary>
     public void ClearMapBordersWithoutEntry()
     {
         GameObject entre = new GameObject();
@@ -1156,40 +1205,46 @@ public class RandomGeneration : MonoBehaviour
         LstBorderBlocs.Add(entre);
     }
 
+    /// <summary>
+    /// Efface tous les blocs de bordure de la carte et réinitialise les connexions des blocs connectés à "pasConnecte".
+    /// </summary>
     public void ClearMapBorder()
     {
         for (int i = 0; i < LstBorderBlocs.Count; i++)
         {
-            connecteur[] lstConnecteur = LstBorderBlocs[i].GetComponentsInChildren<connecteur>();
-            foreach (var scriptConnecteur in lstConnecteur)
+            if (LstBorderBlocs[i] != null)
             {
-                if (scriptConnecteur.BlockConnecte)
+                connecteur[] lstConnecteur = LstBorderBlocs[i].GetComponentsInChildren<connecteur>();
+                foreach (var scriptConnecteur in lstConnecteur)
                 {
-                    scriptConnecteur.BlockConnecte.GetComponent<connecteur>().Connected = "pasConnecte";
-                    Debug.Log("passage");
+                    if (scriptConnecteur.BlockConnecte)
+                    {
+                        scriptConnecteur.BlockConnecte.GetComponent<connecteur>().Connected = "pasConnecte";
+                    }
                 }
+                DestroyImmediate(LstBorderBlocs[i]);
             }
-            DestroyImmediate(LstBorderBlocs[i]);
-
         }
         LstBorderBlocs.Clear();
     }
 
 
+    /// <summary>
+    /// Génère la carte en mode 1 en effaçant d'abord les bordures, puis en effaçant les informations de l'interface utilisateur,
+    /// en récupérant les blocs existants, en ajoutant les blocs non connectés à la liste des entrées, en générant les boutons d'entrée
+    /// et en affichant les informations dans l'interface utilisateur.
+    /// </summary>
     public void GenerateMode1()
     {
-
         ClearMapBorder();
         ManagerUI.ClearAllPathinder();
         ManagerUI.ClearMapInfo();
-
 
         AllBlock.Clear();
         AddAllBlocFromMaze();
 
         LstEntre.Clear();
         GetAllBlocNotConnected();
-
 
         if (EntreChoisi != null)
         {
@@ -1203,6 +1258,11 @@ public class RandomGeneration : MonoBehaviour
         generateBtnEnter(1);
     }
 
+    /// <summary>
+    /// Génère la carte en mode 2 en effaçant d'abord les bordures, puis en effaçant les informations de l'interface utilisateur,
+    /// en récupérant les blocs existants, en ajoutant les blocs non connectés à la liste des entrées, en générant les boutons d'entrée 
+    /// pour le mode 2 et en affichant les informations dans l'interface utilisateur.
+    /// </summary>
     public void GenerateMode2()
     {
         ClearMapBorder();
@@ -1227,7 +1287,11 @@ public class RandomGeneration : MonoBehaviour
         generateBtnEnter(2);
     }
 
-
+    /// <summary>
+    /// Efface toutes les informations de la carte et met à jour les données de la carte en effaçant d'abord les bordures,
+    /// en effaçant les informations de l'interface utilisateur, en récupérant les blocs existants et en ajoutant les blocs
+    /// non connectés à la liste des entrées.
+    /// </summary>
     public void ClearAndUpdateAllMapInfo()
     {
         // Clear map info
@@ -1240,7 +1304,5 @@ public class RandomGeneration : MonoBehaviour
 
         LstEntre.Clear();
         GetAllBlocNotConnected();
-
     }
-
 }

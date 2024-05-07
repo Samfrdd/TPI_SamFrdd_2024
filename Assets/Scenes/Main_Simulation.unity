@@ -2686,6 +2686,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _managerUI: {fileID: 893147434}
   _randomGeneration: {fileID: 893147436}
+  _mapManager: {fileID: 893147433}
   _allEntry: []
 --- !u!1 &913852221
 GameObject:

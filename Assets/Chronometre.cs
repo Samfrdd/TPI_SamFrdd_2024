@@ -20,30 +20,43 @@ public class Chronometre : MonoBehaviour
     public float ElapsedTime { get => _elapsedTime; set => _elapsedTime = value; }
     public bool ChronometerRunning { get => _chronometerRunning; set => _chronometerRunning = value; }
 
-    // Fonction pour démarrer le chronomètre
+    /// <summary>
+    ///   Fonction pour commencer le chronomètre 
+    /// </summary>
     public void StartChronometer()
     {
         ChronometerRunning = true;
     }
 
-    // Fonction pour arrêter le chronomètre
+    /// <summary>
+    ///   Fonction pour arrêter le chronomètre 
+    /// </summary>
     public void StopChronometer()
     {
         ChronometerRunning = false;
     }
 
-    // Fonction pour réinitialiser le chronomètre
+    /// <summary>
+    ///   Fonction pour reset le chronomètre 
+    /// </summary>
     public void ResetChronometer()
     {
         ElapsedTime = 0f;
     }
 
-    // Fonction pour récupérer le temps écoulé en millisecondes
+    /// <summary>
+    /// Fonction pour récupérer le temps écoulé en millisecondes
+    /// </summary>
     public float GetElapsedTime()
     {
         return ElapsedTime;
     }
 
+    /// <summary>
+    /// Formate un temps donné en secondes en une représentation sous forme de chaîne de caractères d'heures, minutes et secondes.
+    /// </summary>
+    /// <param name="timeInSeconds">Le temps en secondes à formater.</param>
+    /// <returns>Une chaîne de caractères représentant le temps formaté selon le format "hh:mm:ss.ss".</returns>
     public string FormatTime(float timeInSeconds)
     {
         int hours = Mathf.FloorToInt(timeInSeconds / 3600);
@@ -60,10 +73,6 @@ public class Chronometre : MonoBehaviour
         {
             // Mettre à jour le temps écoulé
             ElapsedTime += Time.deltaTime;
-
-            // Vous pouvez ajouter ici du code pour afficher le temps écoulé dans l'interface utilisateur, par exemple
-            // Debug.Log("Temps écoulé : " + elapsedTime.ToString("F2")); // Affiche le temps avec deux décimales
-
             gameObject.GetComponent<ManagerUI>().SetTextTimer(FormatTime(ElapsedTime));
             gameObject.GetComponent<ManagerUI>().SetPanelInformationTime(FormatTime(ElapsedTime));
         }
