@@ -213,7 +213,7 @@ public class AutomaticManager : MonoBehaviour
         foreach (var maze in lstMazeToSave)
         {
 
-            SaveMap("Top " + (i + 1) + " : " + maze.Fitness, maze);
+            SaveMapTop10("Top " + (i + 1) + " - " + maze.Fitness, maze);
             i++;
         }
     }
@@ -242,10 +242,9 @@ public class AutomaticManager : MonoBehaviour
 
     }
 
-    public void SaveMap(string name, MapData mapData)
+    public void SaveMapTop10(string name, MapData mapData)
     {
-        string folderPath = Application.persistentDataPath + "/Top10/";
-        MapManager.SetFolderPath("Top10");
+        string folderPath = "top";
         MapManager.SaveMap(name, mapData, folderPath);
     }
 

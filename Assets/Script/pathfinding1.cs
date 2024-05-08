@@ -571,7 +571,7 @@ public class Pathfinding1 : MonoBehaviour
     /// </summary>
     public void NoPathFoundFunction()
     {
-        if (ManagerUI.ModeEnCours != 3)
+        if (ManagerUI.ModeEnCours != 3 && ManagerUI.ModeEnCours != 2)
         {
             ManagerUI.SetTexBoxText("Aucun chemin trouvé !");
             ManagerUI.BtnRestartGenerator.gameObject.SetActive(true);

@@ -359,6 +359,7 @@ public class ManagerUI : MonoBehaviour
         SetBtnInformation(false);
         SetScrollViewBtnEntry(false);
         ClearAllInfoModeAuto();
+        CloseModalInformation();
 
         ManagerModal.CloseModal(ModalChoice);
 
@@ -369,16 +370,18 @@ public class ManagerUI : MonoBehaviour
 
     public void StartMode2()
     {
+        AlgoEnCours = false;
+
         // -------------------------- variable
         ModeEnCours = 2;
         NbExitFound = 0;
         // -------------------------- Affichage
-
         SetBtnChoice(false);
         RemoveButtonSave();
         RemoveButtonStart();
         RemoveButtonGeneration();
         SetBtnInformation(false);
+        CloseModalInformation();
         SetScrollViewBtnEntry(false);
         ClearAllInfoModeAuto();
 
@@ -404,6 +407,7 @@ public class ManagerUI : MonoBehaviour
         ManagerModal.CloseModal(ModalChoice);
         // Mode 3. le bot trouve avec toute les entrés toute les sorties possible
         AutomaticManager.StartModeAuto();
+        CloseModalInformation();
 
     }
 

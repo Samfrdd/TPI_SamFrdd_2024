@@ -82,12 +82,20 @@ public class MapManager : MonoBehaviour
     /// <param name="mapData">Les données de la carte à sauvegarder.</param>
     public void SaveMap(string mapName, MapData mapData, string folderPath)
     {
-        // Créer le dossier de sauvegarde s'il n'existe pas
-        if (!Directory.Exists(SaveFolderPath))
-            Directory.CreateDirectory(SaveFolderPath);
+        if (folderPath == "top")
+        {
+            folderPath = Application.persistentDataPath + "/Top10/";
+        }
+
 
         string filePath = folderPath + mapName + ".xml";
+        // Créer le dossier de sauvegarde s'il n'existe pas
+        if (!Directory.Exists(folderPath))
+            Directory.CreateDirectory(folderPath);
 
+
+
+        Debug.Log("Map saved at: " + folderPath + " --- " + filePath);
         // Sérialiser les données de la carte en XML
         // En résumé, ce code prend un objet MapData, le sérialise en XML et enregistre le résultat dans un fichier spécifié.
         XmlSerializer serializer = new XmlSerializer(typeof(MapData));

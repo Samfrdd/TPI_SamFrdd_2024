@@ -73,7 +73,7 @@ public class ModalWindowSave : MonoBehaviour
     {
         string userInput = this.InputField.GetComponent<InputField>().text;
         Debug.Log("Input validé : " + userInput);
-        string folderPath = Application.persistentDataPath + "/Maps/"; ;
+        string folderPath = Application.persistentDataPath + "/Maps/";
         string mapName;
         MapData mapData = new MapData();
         bool nameValide = true;
