@@ -10,23 +10,18 @@ using Unity.VisualScripting;
 
 public class AutomaticManager : MonoBehaviour
 {
-
     [SerializeField]
     private ManagerUI _managerUI;
     [SerializeField]
     private RandomGeneration _randomGeneration;
-
     [SerializeField]
     private MapManager _mapManager;
     [SerializeField]
     private List<EntryData> _lstAllEntryData = new List<EntryData>();
     [SerializeField]
     private List<GameObject> _allEntry;
-
     private List<GameObject> _lstFolderIa = new List<GameObject>();
-
     private GameObject _currentTraceActive;
-
     public ManagerUI ManagerUI { get => _managerUI; set => _managerUI = value; }
     public RandomGeneration RandomGeneration { get => _randomGeneration; set => _randomGeneration = value; }
     public List<GameObject> AllEntry { get => _allEntry; private set => _allEntry = value; }
@@ -56,7 +51,6 @@ public class AutomaticManager : MonoBehaviour
             while (!tourFinish)
             {
                 ManagerUI.SetTexBoxText("les bots test l'entrée numéro " + (i + 1));
-
 
                 yield return new WaitForSeconds(0.02f);
                 if (!isStarted) // si le bot n'as pas encore commencé on le fait spawn

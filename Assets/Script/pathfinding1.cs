@@ -22,14 +22,11 @@ public class Pathfinding1 : MonoBehaviour
     private float _right;
     [SerializeField]
     private float _left;
-
     [SerializeField]
     private float _state = 0;
     [SerializeField]
     private float _distance = 0;
-
     private float _realDistance = 0;
-
     [SerializeField]
     private bool _blocked = false;
 

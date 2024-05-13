@@ -189,7 +189,7 @@ public class RandomGeneration : MonoBehaviour
 
                         // On ajoute les connecteurs dans la liste                                  
                         int childCount = block.transform.childCount;
-
+                        
                         for (int i = 0; i < childCount; i++)
                         {
                             Transform child = block.transform.GetChild(i);
