@@ -35,6 +35,10 @@ public class Enter2_PathfinderNewDirection : MonoBehaviour
         PrefabParent = GameObject.FindWithTag("IA");
     }
 
+
+    /// <summary>
+    /// Démarre le processus de recherche du pathfinder.
+    /// </summary>
     public void StartPathfinder()
     {
         GameManager.GetComponent<ManagerUI>().ClearMapInfo();
@@ -53,6 +57,10 @@ public class Enter2_PathfinderNewDirection : MonoBehaviour
 
     }
     // Update is called once per frame
+
+    /// <summary>
+    /// Instancie un nouveau pathfinder et le place dans la scène.
+    /// </summary>
     public void SpawnPathfinder()
     {
         GameObject pathfinder = Instantiate(PrefabPathfinder, transform.position, transform.rotation);

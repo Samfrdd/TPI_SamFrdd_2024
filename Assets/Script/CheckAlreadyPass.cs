@@ -13,30 +13,39 @@ using UnityEngine;
 
 public class CheckAlreadyPass : MonoBehaviour
 {
-   [SerializeField]
-   private GameObject _pathfinder;
+    [SerializeField]
+    private GameObject _pathfinder;
 
-   [SerializeField]
-   private bool _isBlockEnding;
+    [SerializeField]
+    private bool _isBlockEnding;
 
     public GameObject Pathfinder { get => _pathfinder; set => _pathfinder = value; }
     public bool IsBlockEnding { get => _isBlockEnding; set => _isBlockEnding = value; }
 
+    /// <summary>
+    /// Méthode appelée lorsque le collider de cet objet entre en contact avec un autre collider.
+    /// </summary>
+    /// <param name="other">Le collider avec lequel cet objet entre en contact.</param>
+
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "pathfinder"){
-            if(Pathfinder == null){
+        if (other.gameObject.tag == "pathfinder")
+        {
+            if (Pathfinder == null)
+            {
                 Pathfinder = other.gameObject;
             }
 
-            if(IsBlockEnding){
-               // other.gameObject.GetComponent<Pathfinding1>().BlockPathfinder();
+            if (IsBlockEnding)
+            {
+                // other.gameObject.GetComponent<Pathfinding1>().BlockPathfinder();
             }
         }
     }
 
 
-    public void ClearInfo(){
+    public void ClearInfo()
+    {
         Pathfinder = null;
     }
 }

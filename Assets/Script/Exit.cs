@@ -21,7 +21,10 @@ public class Exit : MonoBehaviour
     public Material Material { get => _material; set => _material = value; }
 
 
-    // Update is called once per frame
+    /// <summary>
+    /// Méthode appelée lorsque le collider de cet objet entre en contact avec un autre collider.
+    /// </summary>
+    /// <param name="other">Le collider avec lequel cet objet entre en contact.</param>
 
     private void OnTriggerEnter(Collider other)
     {

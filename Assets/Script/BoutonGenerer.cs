@@ -16,6 +16,9 @@ public class BoutonGenerer : MonoBehaviour
 {
     private const string SceneName = "generationMap"; // Le nom de la sc�ne vers laquelle vous souhaitez changer
 
+    /// <summary>
+    /// Charge la scène spécifiée par son nom.
+    /// </summary>
     public void ChangeScene()
     {
         SceneManager.LoadScene(SceneName);

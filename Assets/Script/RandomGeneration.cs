@@ -156,7 +156,7 @@ public class RandomGeneration : MonoBehaviour
         GameObject previousBlock = null;
         int nbTentative = 0;
 
-        // Comment
+        // Double boucle for pour le nombre de ligne et de colonne a place
         for (int row = 0; row < Rows; row++)
         {
             for (int col = 0; col < Columns; col++)
@@ -178,9 +178,9 @@ public class RandomGeneration : MonoBehaviour
                         List<string> listString = new List<string>();
 
                         // On instancie le nous block qui va �tre ajout� 
-                        GameObject selectedRoadBlockPrefab = LstBlockMaze[UnityEngine.Random.Range(0, LstBlockMaze.Count)];
-                        block = Instantiate(selectedRoadBlockPrefab, position, Quaternion.identity);
-                        block.transform.parent = FolderBlocParent;
+                        GameObject selectedRoadBlockPrefab = LstBlockMaze[UnityEngine.Random.Range(0, LstBlockMaze.Count)]; // Récupère un bloc aléatoirement
+                        block = Instantiate(selectedRoadBlockPrefab, position, Quaternion.identity); // Instencie le bloc
+                        block.transform.parent = FolderBlocParent; 
                         block.transform.Rotate(0f, LstRotationBlock[UnityEngine.Random.Range(0, LstRotationBlock.Count)], 0f);
                         block.name = block.name + "_Row:" + row + "_Col:" + col;
 

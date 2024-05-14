@@ -29,6 +29,9 @@ public class AutomaticManager : MonoBehaviour
     public List<GameObject> LstFolderIa { get => _lstFolderIa; set => _lstFolderIa = value; }
     public MapManager MapManager { get => _mapManager; set => _mapManager = value; }
 
+    /// <summary>
+    /// Démarre le mode automatique de l'algorithme.
+    /// </summary>
     public void StartModeAuto()
     {
         RandomGeneration.ClearAndUpdateAllMapInfo();
@@ -36,6 +39,10 @@ public class AutomaticManager : MonoBehaviour
         StartCoroutine(StartAlgo());
     }
 
+    /// <summary>
+    /// Démarre l'exécution de l'algorithme.
+    /// </summary>
+    /// <returns>Un énumérateur pour l'exécution asynchrone.</returns>
     public IEnumerator StartAlgo()
     {
         LstAllEntryData.Clear();
@@ -89,6 +96,10 @@ public class AutomaticManager : MonoBehaviour
         AlgoFinish();
     }
 
+    /// <summary>
+    /// Enregistre la trace de l'algorithme pour une entrée spécifique.
+    /// </summary>
+    /// <param name="numero">Le numéro de l'entrée.</param>
     public void SaveTrace(int numero)
     {
         GameObject saveTrace = new GameObject();
@@ -106,18 +117,24 @@ public class AutomaticManager : MonoBehaviour
         HideTrace(saveTrace);
     }
 
+    /// <summary>
+    /// Masque la trace de l'algorithme en désactivant les objets dans le dossier spécifié.
+    /// </summary>
+    /// <param name="IAFolder">Le dossier contenant les objets à masquer.</param>
     public void HideTrace(GameObject IAFolder)
     {
         foreach (Transform bot in IAFolder.transform)
         {
             bot.gameObject.SetActive(false);
             bot.GetComponent<Pathfinding1>().enabled = false;
-            // bot.gameObject.GetComponent<Pathfinding1>().StopMovement();
-            // bot.gameObject.GetComponent<Pathfinding1>().BlockPathfinderForSave();
-            // bot.gameObject.GetComponent<Pathfinding1>().BlockDuplication();
         }
     }
 
+
+    /// <summary>
+    /// Affiche la trace de l'algorithme en activant les objets dans le dossier spécifié.
+    /// </summary>
+    /// <param name="name">Le nom du dossier contenant les objets à afficher.</param>
     public void AfficherTrace(string name)
     {
         if (_currentTraceActive != null)
@@ -135,6 +152,9 @@ public class AutomaticManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Efface la trace actuellement affichée en désactivant les objets dans le dossier de trace actif.
+    /// </summary>
     public void ClearCurrentTrace()
     {
         foreach (Transform bot in _currentTraceActive.transform)
@@ -143,6 +163,9 @@ public class AutomaticManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Indique que l'algorithme est terminé, effectue diverses actions finales et affiche les informations de fin.
+    /// </summary>
     public void AlgoFinish()
     {
         ManagerUI.SetBtnInformation(true);
@@ -165,6 +188,10 @@ public class AutomaticManager : MonoBehaviour
         CheckFitnessTop10(CalculerFitnessCarte());
     }
 
+    /// <summary>
+    /// Vérifie si le score du nouveau labyrinthe est dans le top 10 des scores enregistrés. Si oui, le sauvegarde.
+    /// </summary>
+    /// <param name="fitness">Le score du nouveau labyrinthe.</param>
     public void CheckFitnessTop10(float fitness)
     {
         List<MapData> listMaze = new List<MapData>();
@@ -197,6 +224,10 @@ public class AutomaticManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Trie la liste des labyrinthes par score de fitness décroissant et sauvegarde les 10 meilleurs.
+    /// </summary>
+    /// <param name="lstMazeToSave">La liste des labyrinthes à sauvegarder.</param>
     private void SortAndSave(List<MapData> lstMazeToSave)
     {
         DeleteAllFilesInFolder();
@@ -231,17 +262,23 @@ public class AutomaticManager : MonoBehaviour
             Debug.LogWarning("Le dossier n'existe pas : " + Application.persistentDataPath + "/Top10/");
         }
     }
-    public void AjouterLabyrinthe(float nouveauLabyrinthe)
-    {
 
-    }
 
+    /// <summary>
+    /// Sauvegarde un labyrinthe dans le dossier des 10 meilleurs avec un nom spécifié.
+    /// </summary>
+    /// <param name="name">Le nom du labyrinthe.</param>
+    /// <param name="mapData">Les données du labyrinthe à sauvegarder.</param>
     public void SaveMapTop10(string name, MapData mapData)
     {
         string folderPath = "top";
         MapManager.SaveMap(name, mapData, folderPath);
     }
 
+    /// <summary>
+    /// Récupère et retourne la liste des données des labyrinthes figurant dans le top 10.
+    /// </summary>
+    /// <returns>La liste des données des labyrinthes du top 10.</returns>
     public List<MapData> GetAllTop10Maze()
     {
         List<MapData> listMaze = new List<MapData>();
@@ -265,6 +302,11 @@ public class AutomaticManager : MonoBehaviour
 
         return listMaze;
     }
+
+    /// <summary>
+    /// Calcule et retourne le nombre total de sorties trouvées dans toutes les données d'entrée enregistrées.
+    /// </summary>
+    /// <returns>Le nombre total de sorties trouvées.</returns>
     public float GetAllExitFound()
     {
         float allExit = 0;
@@ -274,6 +316,11 @@ public class AutomaticManager : MonoBehaviour
         }
         return allExit;
     }
+
+    /// <summary>
+    /// Calcule et retourne le score de fitness pour une entrée spécifique, en fonction de différents critères.
+    /// </summary>
+    /// <returns>Le score de fitness de l'entrée.</returns>
     public float GetEntryFitness()
     {
         float fitness = 0;
@@ -283,6 +330,11 @@ public class AutomaticManager : MonoBehaviour
         return fitness;
     }
 
+
+    /// <summary>
+    /// Calcule et retourne le score de fitness total de la carte en additionnant les scores de fitness de toutes les entrées.
+    /// </summary>
+    /// <returns>Le score de fitness total de la carte.</returns>
     public float CalculerFitnessCarte()
     {
         float fitness = 0;
@@ -293,6 +345,9 @@ public class AutomaticManager : MonoBehaviour
         return fitness;
     }
 
+    /// <summary>
+    /// Efface tous les dossiers contenant les données des IA.
+    /// </summary>
     public void LstFolderIaClear()
     {
         for (int i = 0; i < LstFolderIa.Count; i++)
