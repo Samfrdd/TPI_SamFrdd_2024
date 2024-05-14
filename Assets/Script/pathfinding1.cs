@@ -244,7 +244,6 @@ public class Pathfinding1 : MonoBehaviour
     {
         if (!Blocked) // Si on a pas atteint un sens unique
         {
-
             switch (State)
             {
                 case 0:  // Croisement
@@ -274,20 +273,14 @@ public class Pathfinding1 : MonoBehaviour
                 case 2: // Rien devant et a droite
                     if (!HasDuplicate && CanDuplicate && CheckIfFirstPathfinder())
                     {
-
                         transform.position = CurrentBloc.transform.position + new Vector3(0, 1, 0);
                         StopMovement();
-
                         DuplicationForward();
                         DuplicationRight();
                     }
-
                     break;
                 case 3:   // Virage a droite 
-
-
                     transform.position = CurrentBloc.transform.position + new Vector3(0, 1, 0);
-
                     if (!HasDuplicate && CanDuplicate && CheckIfFirstPathfinder())
                     {
                         BlockChangeState = true;
@@ -304,7 +297,6 @@ public class Pathfinding1 : MonoBehaviour
 
                     if (!HasDuplicate && CanDuplicate && CheckIfFirstPathfinder())
                     {
-
                         transform.position = CurrentBloc.transform.position + new Vector3(0, 1, 0);
                         StopMovement();
                         DuplicationForward();
@@ -324,9 +316,7 @@ public class Pathfinding1 : MonoBehaviour
                         transform.Rotate(Vector3.up, -90f);
                         CurrentSpeed = Speed;
                         State = 6;
-
                     }
-
                     break;
                 case 6:  // Rien devant 
                     CurrentSpeed = Speed;
