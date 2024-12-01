@@ -32,8 +32,8 @@ Ce projet, réalisé dans le cadre du TPI (Travail Pratique Individuel), vise à
 ## Structure des dossiers
 - **Assets/** : Contient les éléments Unity (scripts, scènes, préfabs, etc.).
 - **Documentation/** : Documentation technique et livrables.
-- **Scripts/** : Tous les scripts du projet.
-- **Prefabs/** : Préfabriqués pour les blocs, bots, et UI.
+- **Assets/Scripts/** : Tous les scripts du projet.
+- **Assets/Prefabs/** : Préfabriqués pour les blocs, bots, et UI.
 
 ## Méthodologie de développement
 Le projet a été réalisé selon une **méthode en 6 étapes** :
